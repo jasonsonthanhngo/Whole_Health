@@ -279,6 +279,95 @@
             }
         }
     }
+    function validateForm() {
+        const errors = [];
+
+        // Patient Information
+        const patientFirstName = document.getElementById('patientFirstName').value.trim();
+        const patientLastName = document.getElementById('patientLastName').value.trim();
+        const birthdate = document.getElementById('birthdate').value;
+        const patientPhoneNumber = document.getElementById('patientPhoneNumber').value.trim();
+
+        const nameRegex = /^[A-Za-z\s-]+$/;
+        const phoneRegex = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+
+        if (!patientFirstName) {
+            errors.push("Patient First Name is required.");
+        } else if (!nameRegex.test(patientFirstName)) {
+            errors.push("Patient First Name must contain only letters, spaces, or hyphens.");
+        }
+
+        if (!patientLastName) {
+            errors.push("Patient Last Name is required.");
+        } else if (!nameRegex.test(patientLastName)) {
+            errors.push("Patient Last Name must contain only letters, spaces, or hyphens.");
+        }
+
+        if (!birthdate) {
+            errors.push("Patient Birthdate is required.");
+        } else {
+            const dob = new Date(birthdate);
+            const today = new Date();
+            if (dob > today) {
+                errors.push("Patient Birthdate cannot be in the future.");
+            }
+        }
+
+        if (!patientPhoneNumber) {
+            errors.push("Patient Phone Number is required.");
+        } else if (!phoneRegex.test(patientPhoneNumber)) {
+            errors.push("Patient Phone Number must be a valid US phone number (e.g., 123-456-7890).");
+        }
+
+        // Signer Information
+        const signerType = document.getElementById('signerType').value;
+        if (!signerType) {
+            errors.push("Please select who is signing the form (Patient or Caregiver).");
+        } else if (signerType === 'patient') {
+            const patientName = document.getElementById('patientName').value.trim();
+            const patientSignature = document.getElementById('signatureData').value;
+            const patientSignedOn = document.getElementById('patientSignedOn').value;
+            const expectedPatientName = `${patientFirstName} ${patientLastName}`.trim();
+
+            if (!patientName) {
+                errors.push("Patient Name is required for patient signature.");
+            } else if (patientName.toLowerCase() !== expectedPatientName.toLowerCase()) {
+                errors.push("Patient Name must match the entered First and Last Name.");
+            }
+
+            if (!patientSignature || isCanvasEmpty(document.getElementById('signatureCanvas'))) {
+                errors.push("Patient Signature is required.");
+            }
+
+            if (!patientSignedOn) {
+                errors.push("Patient Signature Date/Time is required.");
+            }
+        } else if (signerType === 'caregiver') {
+            const caregiverName = document.getElementById('caregiverName').value.trim();
+            const caregiverSignature = document.getElementById('caregiverSignatureData').value;
+            const caregiverSignedOn = document.getElementById('caregiverSignedOn').value;
+
+            if (!caregiverName) {
+                errors.push("Caregiver Name is required for caregiver signature.");
+            } else if (!nameRegex.test(caregiverName)) {
+                errors.push("Caregiver Name must contain only letters, spaces, or hyphens.");
+            }
+
+            if (!caregiverSignature || isCanvasEmpty(document.getElementById('caregiverSignatureCanvas'))) {
+                errors.push("Caregiver Signature is required.");
+            }
+
+            if (!caregiverSignedOn) {
+                errors.push("Caregiver Signature Date/Time is required.");
+            }
+        }
+
+        if (errors.length > 0) {
+            alert("Please fix the following errors:\n- " + errors.join("\n- "));
+            return false;
+        }
+        return true;
+    }
 
     // Initialize signature canvases
     const signatureCanvas = document.getElementById('signatureCanvas');
@@ -307,7 +396,7 @@
 
     // Caregiver signature event listeners
     caregiverSignatureCanvas.addEventListener('mousedown', (e) => startDrawing(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos));
-    signatureCanvas.addEventListener('mousemove', (e) => draw(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos, caregiverSignatureDataInput));
+    caregiverSignatureCanvas.addEventListener('mousemove', (e) => draw(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos, caregiverSignatureDataInput));
     caregiverSignatureCanvas.addEventListener('mouseup', () => stopDrawing(caregiverSignatureCanvas, caregiverLastPos, caregiverSignatureDataInput));
     caregiverSignatureCanvas.addEventListener('mouseout', () => stopDrawing(caregiverSignatureCanvas, caregiverLastPos, caregiverSignatureDataInput));
     caregiverSignatureCanvas.addEventListener('touchstart', (e) => {
@@ -374,6 +463,9 @@
     // Form submission
     document.getElementById('submitButton').addEventListener('click', async (e) => {
         e.preventDefault();
+        if (!validateForm()) {
+            return;
+        }
 
         // Collect form data
         const patientFirstName = document.getElementById('patientFirstName').value;
@@ -415,7 +507,7 @@
         body {
             font-family: sans-serif;
             line-height: 1.6;
-            margin: 20px;
+            margin: 0;
         }
         .form-group {
             margin-bottom: 20px;
@@ -456,97 +548,135 @@
             background-color: #f9f9f9;
             color: #666;
         }
-        @page {
-            margin: 20mm;
-            @top-center { content: none; }
-            @bottom-center { content: none; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .footer-space {
+            height: 50px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 20mm;
+            right: 20mm;
+            height: 50px;
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+            padding-top: 5px;
+            border-top: 1px solid #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 1000;
+        }
+        @media screen {
+            .footer {
+                display: none;
+            }
         }
         @media print {
+            tfoot { display: table-footer-group; }
             .signature-container { break-inside: avoid; }
+        }
+        @page {
+            margin: 20mm 20mm 10mm 20mm;
+            @top-center { content: none; }
+            @bottom-center { content: none; }
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Whole Health Infusion Clinic<br />Consent Form</h1>
-    <div class="form-group">
-        <label>Patient First Name:</label>
-        <input type="text" value="${patientFirstName}" readonly style="width: 300px;">
-    </div>
-    <div class="form-group">
-        <label>Patient Last Name:</label>
-        <input type="text" value="${patientLastName}" readonly style="width: 300px;">
-    </div>
-    <div class="form-group">
-        <label>Patient Birthdate:</label>
-        <input type="date" value="${birthdate}" readonly>
-    </div>
-    <div class="form-group">
-        <label>Patient Phone Number:</label>
-        <input type="text" value="${patientPhoneNumber}" readonly style="width: 300px;">
-    </div>
-    <p style="text-align: justify;">I have been given sufficient information to make an informed decision and consent to treatment. I am aware of the potential benefits, side effects and contraindications of the infusion medication and infusion therapy that my physician has ordered. I understand that I have the right to refuse the recommended therapy at any time. I acknowledge that I have read and fully understand this consent, related documents, and that all blanks or statements requiring insertion or completion were filled in before I affixed my signature. No guarantees or promises have been made to me regarding the outcome of the treatment. I also authorize the company to photograph, video and/or use any other mediums which result in the permanent documentation of my image for safety, medical, scientific or educational purposes. I agree that any such photographs taken pursuant to this authorization, which are not required by law to be retained, may be disposed of by the company so long as the manner of disposition shall be permanent destruction.</p>
-    <p style="text-align: center;"><strong>HEPATITIS B VIRUS CONSENT FOR TREATMENT</strong></p>
-    <p style="text-align: justify;">For patients on the following medications: Actemra, Cimzia, Inflectra, Orencia, Remicade, Rituxan, Simponi Aria: If I have not had a Hepatitis B Virus (HBV) vaccination or I refuse such vaccination, I understand that due to my exposure to potentially infectious material, I may be at risk of acquiring HBV. I understand that by not obtaining this vaccine, I continue to be at an increased risk of acquiring HBV, a serious disease.</p>
-    <p style="text-align: center;"><strong>PREGNANCY AND BREASTFEEDING CONSENT FOR TREATMENT</strong></p>
-    <p style="text-align: justify;">For females: Please check one (1) of the following:</p>
-    <div class="form-group" style="margin-left: 40px;">
-        <input type="checkbox" name="pregnancyConsent" value="notPregnant" ${pregnancyConsent.includes('notPregnant') ? 'checked' : ''}>
-        I am not pregnant now and have no reason to suspect that I am pregnant. I am aware of the potential risks, known and unknown, to the fetus if I become pregnant during treatment including miscarriage or congenital deformity. If I should become pregnant, I will notify the clinical staff immediately.
-    </div>
-    <div class="form-group" style="margin-left: 40px;">
-        <input type="checkbox" name="pregnancyConsent" value="isPregnant" ${pregnancyConsent.includes('isPregnant') ? 'checked' : ''}>
-        I am pregnant, will continue treatment and am aware of the potential risks, known and unknown, to the fetus including miscarriage or congenital deformity.
-    </div>
-    <div class="form-group" style="margin-left: 40px;">
-        <input type="checkbox" name="pregnancyConsent" value="breastfeeding" ${pregnancyConsent.includes('breastfeeding') ? 'checked' : ''}>
-        I am breastfeeding and will continue breastfeeding while receiving treatment. I am aware of the potential risks, known and unknown to my breastfeeding child while receiving treatment.
-    </div>
-    <p style="text-align: center;"><strong>PATIENT PRIVACY NOTIFICATION</strong></p>
-    <p style="text-align: justify;">As permitted by the Health Insurance Portability and Accountability Act (HIPAA), I understand that my protected health information may be used and disclosed by my physician, office staff, and others outside of these offices who are involved in my care and treatment for the purpose of providing health care services. Although all NP's, RN's and infusion center staff will attempt to conceal written medical information, I understand that other patients or staff in the infusion center may overhear the staff when medical information is provided to me. I further acknowledge that the infusion center is an open treatment area that may be monitored by video surveillance. By signing this page I give my consent to be monitored and recorded by video. By signing this page, I acknowledge that I have read and fully understand the above statement.</p>
-    <p style="text-align: center;"><strong>EMPLOYEE INCIDENT</strong></p>
-    <p style="text-align: justify;">In case of an employee needle stick injury or exposure to blood/body fluids, you consent to have your labs drawn by our clinical staff which would include, but not be limited to, Hepatitis B, Hepatitis C, and HIV.</p>
-    <p style="text-align: center;"><strong>PATIENT HANDOUTS</strong></p>
-    <p style="text-align: justify;">I have received a copy of patient handouts that contains, or, I have been provided the pharmacy’s website address that contains: Patient Bill Of Rights and Responsibilities, HIPAA Privacy Notice, Emergency Planning, Home Safety, Infection Control, Making Decisions about Your Health Care, How to Place a Prescription Order, How to Obtain a Refill, How to Access Medications In Case of an Emergency or Disaster, How to Check on a Prescription Order, Information on Prescription Drug Substitutions, How to Transfer a Prescription to another Pharmacy, How to Obtain Medications Not Available at the Pharmacy, How to Handle Medication Recalls, How to Dispose of Medications, How to Handle Adverse Reactions and Grievance / Complaint Reporting.</p>
-    <p style="text-align: justify;">I have received monograph/instructions for medications received. I have received pharmacy marketing material and information on the pharmacy’s scope of services. I have received instructions on how to follow up with Whole Health Infusion Clinic.</p>
-    <p style="text-align: justify;"><strong>TO THE PATIENT (AND OTHERS LEGALLY RESPONSIBLE FOR THE PATIENT):</strong> You have the right as a patient, to be informed about your condition and how Infusion therapy medicine may be applied in a treatment plan. This disclosure is intended to provide an opportunity for you to make an informed decision so that you may give or withhold your consent to treatment. I voluntarily request that Whole Health Infusion Clinic and other affiliated health care personnel as they may deem necessary, treat my condition (or the condition of the person for whom I am responsible). I understand that the treatment is planned for me (or the person for whom I am responsible), and I voluntarily consent and authorize to be treated. Please read the following information carefully and provide your consent by signing below.</p>
-    <p style="text-align: justify;"><strong>I understand that no warranty or guarantee has been made regarding the results of treatment.</strong> I realize that there may be risks and hazards in treating this present health condition, with or without conventional medicine, and there may also be risks and hazards related to the planned treatment; including worsening of present symptoms, development of new symptoms, possible undesirable interactions between various treatments. Serious infusion reactions have been reported with Infliximab, including hives, difficulty breathing, and low blood pressure. Reactions have occurred during or after infusions. In clinical studies, some people experienced the following common side effects: respiratory infections (that may include sinus infections and sore throat), coughing, and stomach pain or mild reactions to infusion such as rash or itchy skin. The reports of serious infections, including tuberculosis (TB) and Reports of lymphoma (a type of cancer) in patients on Infliximab and other TNF blockers are rare but occur more often than in the general population. Some of these infections have been fatal. Nervous system disorders have also been reported.</p>
-    <p style="text-align: justify;">I have been given an opportunity to ask questions about the treatment of this health condition using conventional methods with my ordering provider. I have had an opportunity to discuss the possible risks and hazards of treatment and non-treatment with my ordering provider, and I believe that I have sufficient information to give this informed consent.</p>
-    <p style="text-align: justify;">I certify that I have read this form (or have asked to have it read to me), and that I understand its contents. I also certify that neither Whole Health Infusion Clinic nor any affiliated staff have made guarantees to me as to the success of this treatment.</p>
-    <div class="form-group">
-        <label>Patient Name:</label>
-        <input type="text" value="${patientName}" readonly style="width: 300px;">
-    </div>
-    <div class="signature-container">
-        <label>Patient Signature:</label>
-        <div class="signature-row">
-            ${patientSignature && patientSignature !== "" ?
+    <table>
+        <tbody><tr><td>
+            <div class="content">
+                <h1 style="text-align: center;">Whole Health Infusion Clinic<br />Consent Form</h1>
+                <div class="form-group">
+                    <label>Patient First Name:</label>
+                    <input type="text" value="${patientFirstName}" readonly style="width: 300px;">
+                </div>
+                <div class="form-group">
+                    <label>Patient Last Name:</label>
+                    <input type="text" value="${patientLastName}" readonly style="width: 300px;">
+                </div>
+                <div class="form-group">
+                    <label>Patient Birthdate:</label>
+                    <input type="date" value="${birthdate}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Patient Phone Number:</label>
+                    <input type="text" value="${patientPhoneNumber}" readonly style="width: 300px;">
+                </div>
+                <p style="text-align: justify;">I have been given sufficient information to make an informed decision and consent to treatment. I am aware of the potential benefits, side effects and contraindications of the infusion medication and infusion therapy that my physician has ordered. I understand that I have the right to refuse the recommended therapy at any time. I acknowledge that I have read and fully understand this consent, related documents, and that all blanks or statements requiring insertion or completion were filled in before I affixed my signature. No guarantees or promises have been made to me regarding the outcome of the treatment. I also authorize the company to photograph, video and/or use any other mediums which result in the permanent documentation of my image for safety, medical, scientific or educational purposes. I agree that any such photographs taken pursuant to this authorization, which are not required by law to be retained, may be disposed of by the company so long as the manner of disposition shall be permanent destruction.</p>
+                <p style="text-align: center;"><strong>HEPATITIS Bándose VIRUS CONSENT FOR TREATMENT</strong></p>
+                <p style="text-align: justify;">For patients on the following medications: Actemra, Cimzia, Inflectra, Orencia, Remicade, Rituxan, Simponi Aria: If I have not had a Hepatitis B Virus (HBV) vaccination or I refuse such vaccination, I understand that due to my exposure to potentially infectious material, I may be at risk of acquiring HBV. I understand that by not obtaining this vaccine, I continue to be at an increased risk of acquiring HBV, a serious disease.</p>
+                <p style="text-align: center;"><strong>PREGNANCY AND BREASTFEEDING CONSENT FOR TREATMENT</strong></p>
+                <p style="text-align: justify;">For females: Please check one (1) of the following:</p>
+                <div class="form-group" style="margin-left: 40px;">
+                    <input type="checkbox" name="pregnancyConsent" value="notPregnant" ${pregnancyConsent.includes('notPregnant') ? 'checked' : ''}>
+                    I am not pregnant now and have no reason to suspect that I am pregnant. I am aware of the potential risks, known and unknown, to the fetus if I become pregnant during treatment including miscarriage or congenital deformity. If I should become pregnant, I will notify the clinical staff immediately.
+                </div>
+                <div class="form-group" style="margin-left: 40px;">
+                    <input type="checkbox" name="pregnancyConsent" value="isPregnant" ${pregnancyConsent.includes('isPregnant') ? 'checked' : ''}>
+                    I am pregnant, will continue treatment and am aware of the potential risks, known and unknown, to the fetus including miscarriage or congenital deformity.
+                </div>
+                <div class="form-group" style="margin-left: 40px;">
+                    <input type="checkbox" name="pregnancyConsent" value="breastfeeding" ${pregnancyConsent.includes('breastfeeding') ? 'checked' : ''}>
+                    I am breastfeeding and will continue breastfeeding while receiving treatment. I am aware of the potential risks, known and unknown to my breastfeeding child while receiving treatment.
+                </div>
+                <p style="text-align: center;"><strong>PATIENT PRIVACY NOTIFICATION</strong></p>
+                <p style="text-align: justify;">As permitted by the Health Insurance Portability and Accountability Act (HIPAA), I understand that my protected health information may be used and disclosed by my physician, office staff, and others outside of these offices who are involved in my care and treatment for the purpose of providing health care services. Although all NP's, RN's and infusion center staff will attempt to conceal written medical information, I understand that other patients or staff in the infusion center may overhear the staff when medical information is provided to me. I further acknowledge that the infusion center is an open treatment area that may be monitored by video surveillance. By signing this page I give my consent to be monitored and recorded by video. By signing this page, I acknowledge that I have read and fully understand the above statement.</p>
+                <p style="text-align: center;"><strong>EMPLOYEE INCIDENT</strong></p>
+                <p style="text-align: justify;">In case of an employee needle stick injury or exposure to blood/body fluids, you consent to have your labs drawn by our clinical staff which would include, but not be limited to, Hepatitis B, Hepatitis C, and HIV.</p>
+                <p style="text-align: center;"><strong>PATIENT HANDOUTS</strong></p>
+                <p style="text-align: justify;">I have received a copy of patient handouts that contains, or, I have been provided the pharmacy’s website address that contains: Patient Bill Of Rights and Responsibilities, HIPAA Privacy Notice, Emergency Planning, Home Safety, Infection Control, Making Decisions about Your Health Care, How to Place a Prescription Order, How to Obtain a Refill, How to Access Medications In Case of an Emergency or Disaster, How to Check on a Prescription Order, Information on Prescription Drug Substitutions, How to Transfer a Prescription to another Pharmacy, How to Obtain Medications Not Available at the Pharmacy, How to Handle Medication Recalls, How to Dispose of Medications, How to Handle Adverse Reactions and Grievance / Complaint Reporting.</p>
+                <p style="text-align: justify;">I have received monograph/instructions for medications received. I have received pharmacy marketing material and information on the pharmacy’s scope of services. I have received instructions on how to follow up with Whole Health Infusion Clinic.</p>
+                <p style="text-align: justify;"><strong>TO THE PATIENT (AND OTHERS LEGALLY RESPONSIBLE FOR THE PATIENT):</strong> You have the right as a patient, to be informed about your condition and how Infusion therapy medicine may be applied in a treatment plan. This disclosure is intended to provide an opportunity for you to make an informed decision so that you may give or withhold your consent to treatment. I voluntarily request that Whole Health Infusion Clinic and other affiliated health care personnel as they may deem necessary, treat my condition (or the condition of the person for whom I am responsible). I understand that the treatment is planned for me (or the condition of the person for whom I am responsible), and I voluntarily consent and authorize to be treated. Please read the following information carefully and provide your consent by signing below.</p>
+                <p style="text-align: justify;"><strong>I understand that no warranty or guarantee has been made regarding the results of treatment.</strong> I realize that there may be risks and hazards in treating this present health condition, with or without conventional medicine, and there may also be risks and hazards related to the planned treatment; including worsening of present symptoms, development of new symptoms, possible undesirable interactions between various treatments. Serious infusion reactions have been reported with Infliximab, including hives, difficulty breathing, and low blood pressure. Reactions have occurred during or after infusions. In clinical studies, some people experienced the following common side effects: respiratory infections (that may include sinus infections and sore throat), coughing, and stomach pain or mild reactions to infusion such as rash or itchy skin. The reports of serious infections, including tuberculosis (TB) and Reports of lymphoma (a type of cancer) in patients on Infliximab and other TNF blockers are rare but occur more often than in the general population. Some of these infections have been fatal. Nervous system disorders have also been reported.</p>
+                <p style="text-align: justify;">I have been given an opportunity to ask questions about the treatment of this health condition using conventional methods with my ordering provider. I have had an opportunity to discuss the possible risks and hazards of treatment and non-treatment with my ordering provider, and I believe that I have sufficient information to give this informed consent.</p>
+                <p style="text-align: justify;">I certify that I have read this form (or have asked to have it read to me), and that I understand its contents. I also certify that neither Whole Health Infusion Clinic nor any affiliated staff have made guarantees to me as to the success of this treatment.</p>
+                <div class="form-group">
+                    <label>Patient Name:</label>
+                    <input type="text" value="${patientName}" readonly style="width: 300px;">
+                </div>
+                <div class="signature-container">
+                    <label>Patient Signature:</label>
+                    <div class="signature-row">
+                        ${patientSignature && patientSignature !== "" ?
             `<img src="${patientSignature}" alt="Patient Signature" width="400" height="100" class="signature-image" />` :
             `<div class="placeholder">No signature</div>`
         }
-            <div>
-                <label>Electronically Signed on:</label>
-                <input type="text" value="${patientSignedOn}" readonly>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Caregiver Name (if applicable):</label>
-        <input type="text" value="${caregiverName}" readonly style="width: 300px;">
-    </div>
-    <div class="signature-container">
-        <label>Caregiver Signature (if applicable):</label>
-        <div class="signature-row">
-            ${caregiverSignature && caregiverSignature !== "" ?
+                        <div>
+                            <label>Electronically Signed on:</label>
+                            <input type="text" value="${patientSignedOn}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Caregiver Name (if applicable):</label>
+                    <input type="text" value="${caregiverName}" readonly style="width: 300px;">
+                </div>
+                <div class="signature-container">
+                    <label>Caregiver Signature (if applicable):</label>
+                    <div class="signature-row">
+                        ${caregiverSignature && caregiverSignature !== "" ?
             `<img src="${caregiverSignature}" alt="Caregiver Signature" width="400" height="100" class="signature-image" />` :
             `<div class="placeholder">No signature</div>`
         }
-            <div>
-                <label>Electronically Signed on:</label>
-                <input type="text" value="${caregiverSignedOn}" readonly>
+                        <div>
+                            <label>Electronically Signed on:</label>
+                            <input type="text" value="${caregiverSignedOn}" readonly>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <p style="text-align: center;">Whole Health Infusion Clinic - Consent Form - 1415 N Broadway, Santa Ana, CA 92706</p>
+        </td></tr></tbody>
+        <tfoot><tr><td>
+            <div class="footer-space">&nbsp;</div>
+        </td></tr></tfoot>
+    </table>
+    <div class="footer">${patientLastName}, ${patientFirstName}</div>
 </body>
 </html>`;
 
@@ -561,6 +691,25 @@
 
             if (response.ok) {
                 alert('Consent form submitted successfully, Thank you!');
+                // Reset the form
+                document.getElementById('patientFirstName').value = '';
+                document.getElementById('patientLastName').value = '';
+                document.getElementById('birthdate').value = '';
+                document.getElementById('patientPhoneNumber').value = '';
+                document.getElementById('checkbox1').checked = false;
+                document.getElementById('checkbox2').checked = false;
+                document.getElementById('checkbox3').checked = false;
+                document.getElementById('signerType').value = '';
+                document.getElementById('patientName').value = '';
+                document.getElementById('patientSignedOn').value = '';
+                document.getElementById('signatureData').value = '';
+                patientCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                document.getElementById('caregiverName').value = '';
+                document.getElementById('caregiverSignedOn').value = '';
+                document.getElementById('caregiverSignatureData').value = '';
+                caregiverCtx.clearRect(0, 0, caregiverSignatureCanvas.width, caregiverSignatureCanvas.height);
+                document.getElementById('patientSignatureWrapper').style.display = 'none';
+                document.getElementById('caregiverSignatureWrapper').style.display = 'none';
             } else {
                 alert('There was an error submitting the form. Please try again.');
             }
