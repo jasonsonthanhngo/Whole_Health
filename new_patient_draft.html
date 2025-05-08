@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whole Health Infusion Clinic - Patient Information</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .warning {
+      color: #d63031;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+    .section-header {
+      text-align: center;
+      background-color: #000;
+      color: white;
+      padding: 8px;
+      margin: 20px 0 10px 0;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .checkbox-group, .radio-group {
+      margin: 10px 0;
+    }
+    .radio-group label {
+      display: inline;
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #response {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: none;
+    }
+    .signature-section {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>Whole Health Infusion Clinic</h1>
+  <h2>Patient Information</h2>
+</div>
+<div class="warning">
+  Please complete the following form as accurately as you are able. Inaccurate and/or incomplete information can delay our ability to authorize your treatments, obtain referrals, and file your insurance claims for payment resulting in possible delays in your treatment.
+</div>
+
+<form id="patientInfoForm">
+  <div class="section-header">PATIENT INFORMATION</div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="lastName" required>
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="firstName" required>
+    </div>
+    <div class="form-group">
+      <label for="mi">MI:</label>
+      <input type="text" id="mi" name="mi">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="dob">DOB:</label>
+      <input type="date" id="dob" name="dob" required>
+    </div>
+    <div class="form-group">
+      <label>Gender:</label>
+      <div class="radio-group">
+        <input type="radio" id="female" name="gender" value="female" required>
+        <label for="female">Female</label>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ssn">SSN:</label>
+      <input type="text" id="ssn" name="ssn" required>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="tel" id="phoneNumber" name="phoneNumber" required>
+    </div>
+    <div class="form-group">
+      <label for="altPhoneNumber">Alternate Phone Number:</label>
+      <input type="tel" id="altPhoneNumber" name="altPhoneNumber">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="address">Address:</label>
+    <textarea id="address" name="address" required></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="allergies">Allergies:</label>
+      <textarea id="allergies" name="allergies"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="preferredLanguage">Preferred Language:</label>
+      <input type="text" id="preferredLanguage" name="preferredLanguage">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="emergencyContact">Emergency Contact:</label>
+      <input type="text" id="emergencyContact" name="emergencyContact" required>
+    </div>
+    <div class="form-group">
+      <label for="emergencyPhone">Emergency Contact Phone:</label>
+      <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Advance Directive Status:</label>
+    <div class="checkbox-group">
+      <input type="checkbox" id="noDirective" name="advanceDirective" value="noDirective">
+      <label for="noDirective">No Directive</label>
+      <input type="checkbox" id="hasLivingWill" name="advanceDirective" value="hasLivingWill">
+      <label for="hasLivingWill">Has Living Will</label>
+      <input type="checkbox" id="healthcarePOA" name="advanceDirective" value="healthcarePOA">
+      <label for="healthcarePOA">Healthcare POA</label>
+    </div>
+  </div>
+
+  <div class="section-header">PHYSICIAN INFORMATION</div>
+  <div class="form-group">
+    <label for="referringPhysician">Referring Physician whom referred you to our infusion:</label>
+    <input type="text" id="referringPhysician" name="referringPhysician" required>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="primaryCarePhysician">Primary Care Physician:</label>
+      <input type="text" id="primaryCarePhysician" name="primaryCarePhysician" required>
+    </div>
+    <div class="form-group">
+      <label for="physicianPhone">Phone:</label>
+      <input type="tel" id="physicianPhone" name="physicianPhone">
+    </div>
+    <div class="form-group">
+      <label for="physicianFax">Fax:</label>
+      <input type="tel" id="physicianFax" name="physicianFax">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="physicianAddress">Physician Address:</label>
+    <textarea id="physicianAddress" name="physicianAddress"></textarea>
+  </div>
+
+  <div class="section-header">PRIMARY INSURANCE INFORMATION</div>
+  <div class="insurance-section">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="primaryInsuranceName">Insurance Name:</label>
+        <input type="text" id="primaryInsuranceName" name="primaryInsuranceName" required>
+      </div>
+      <div class="form-group">
+        <label for="primaryInsurancePhone">Phone:</label>
+        <input type="tel" id="primaryInsurancePhone" name="primaryInsurancePhone">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="primaryPolicyId">Policy ID#:</label>
+        <input type="text" id="primaryPolicyId" name="primaryPolicyId" required>
+      </div>
+      <div class="form-group">
+        <label for="primaryGroupNumber">Group #:</label>
+        <input type="text" id="primaryGroupNumber" name="primaryGroupNumber">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Is the policy holder the same as the patient?</label>
+      <div class="radio-group">
+        <input type="radio" id="primarySameYes" name="primarySameAsPatient" value="yes">
+        <label for="primarySameYes">Yes</label>
+        <input type="radio" id="primarySameNo" name="primarySameAsPatient" value="no">
+        <label for="primarySameNo">No</label>
+      </div>
+    </div>
+    <div id="primaryPolicyHolderInfo" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="primaryPolicyHolder">Policy Holder:</label>
+          <input type="text" id="primaryPolicyHolder" name="primaryPolicyHolder">
+        </div>
+        <div class="form-group">
+          <label for="primaryPolicyHolderDOB">DOB:</label>
+          <input type="date" id="primaryPolicyHolderDOB" name="primaryPolicyHolderDOB">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="primaryPolicyHolderSSN">SSN:</label>
+          <input type="text" id="primaryPolicyHolderSSN" name="primaryPolicyHolderSSN">
+        </div>
+        <div class="form-group">
+          <label for="primaryRelationToPatient">Relation to patient:</label>
+          <input type="text" id="primaryRelationToPatient" name="primaryRelationToPatient">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">SECONDARY INSURANCE INFORMATION</div>
+  <div class="insurance-section">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="secondaryInsuranceName">Insurance Name:</label>
+        <input type="text" id="secondaryInsuranceName" name="secondaryInsuranceName">
+      </div>
+      <div class="form-group">
+        <label for="secondaryInsurancePhone">Phone:</label>
+        <input type="tel" id="secondaryInsurancePhone" name="secondaryInsurancePhone">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="secondaryPolicyId">Policy ID#:</label>
+        <input type="text" id="secondaryPolicyId" name="secondaryPolicyId">
+      </div>
+      <div class="form-group">
+        <label for="secondaryGroupNumber">Group #:</label>
+        <input type="text" id="secondaryGroupNumber" name="secondaryGroupNumber">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Is the policy holder the same as the patient?</label>
+      <div class="radio-group">
+        <input type="radio" id="secondarySameYes" name="secondarySameAsPatient" value="yes">
+        <label for="secondarySameYes">Yes</label>
+        <input type="radio" id="secondarySameNo" name="secondarySameAsPatient" value="no">
+        <label for="secondarySameNo">No</label>
+      </div>
+    </div>
+    <div id="secondaryPolicyHolderInfo" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="secondaryPolicyHolder">Policy Holder:</label>
+          <input type="text" id="secondaryPolicyHolder" name="secondaryPolicyHolder">
+        </div>
+        <div class="form-group">
+          <label for="secondaryPolicyHolderDOB">DOB:</label>
+          <input type="date" id="secondaryPolicyHolderDOB" name="secondaryPolicyHolderDOB">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="secondaryPolicyHolderSSN">SSN:</label>
+          <input type="text" id="secondaryPolicyHolderSSN" name="secondaryPolicyHolderSSN">
+        </div>
+        <div class="form-group">
+          <label for="secondaryRelationToPatient">Relation to patient:</label>
+          <input type="text" id="secondaryRelationToPatient" name="secondaryRelationToPatient">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">TERTIARY INSURANCE INFORMATION</div>
+  <div class="insurance-section">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="tertiaryInsuranceName">Insurance Name:</label>
+        <input type="text" id="tertiaryInsuranceName" name="tertiaryInsuranceName">
+      </div>
+      <div class="form-group">
+        <label for="tertiaryInsurancePhone">Phone:</label>
+        <input type="tel" id="tertiaryInsurancePhone" name="tertiaryInsurancePhone">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="tertiaryPolicyId">Policy ID#:</label>
+        <input type="text" id="tertiaryPolicyId" name="tertiaryPolicyId">
+      </div>
+      <div class="form-group">
+        <label for="tertiaryGroupNumber">Group #:</label>
+        <input type="text" id="tertiaryGroupNumber" name="tertiaryGroupNumber">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Is the policy holder the same as the patient?</label>
+      <div class="radio-group">
+        <input type="radio" id="tertiarySameYes" name="tertiarySameAsPatient" value="yes">
+        <label for="tertiarySameYes">Yes</label>
+        <input type="radio" id="tertiarySameNo" name="tertiarySameAsPatient" value="no">
+        <label for="tertiarySameNo">No</label>
+      </div>
+    </div>
+    <div id="tertiaryPolicyHolderInfo" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tertiaryPolicyHolder">Policy Holder:</label>
+          <input type="text" id="tertiaryPolicyHolder" name="tertiaryPolicyHolder">
+        </div>
+        <div class="form-group">
+          <label for="tertiaryPolicyHolderDOB">DOB:</label>
+          <input type="date" id="tertiaryPolicyHolderDOB" name="tertiaryPolicyHolderDOB">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tertiaryPolicyHolderSSN">SSN:</label>
+          <input type="text" id="tertiaryPolicyHolderSSN" name="tertiaryPolicyHolderSSN">
+        </div>
+        <div class="form-group">
+          <label for="tertiaryRelationToPatient">Relation to patient:</label>
+          <input type="text" id="tertiaryRelationToPatient" name="tertiaryRelationToPatient">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">FINANCIAL PAYMENT POLICY</div>
+  <div class="form-group">
+    <p>Dear Patient, </p>
+    <p>This letter agreement sets forth our company's financial payment policy. I, the undersigned, understand and acknowledge that as a recipient of medical care at or by Whole Health Infusion Clinic, I am responsible for all charges regardless of my circumstances for reimbursement. I understand that a fee is charged for all medical services including, but not limited to, visits, treatments, infusion or injection services, examinations and/or medical reports. I acknowledge and agree that I have the primary duty and obligation to pay Whole Health Infusion for such medical services, notwithstanding, any contract I may have with any third party payer (e.g., Insurance company, employer, etc.).</p>
+    <p>As a courtesy, we will attempt to verify your insurance coverage, if any, and estimate the amount you may owe for services provided (e.g. co-pay, deductible, co-insurance, etc.) should insurance apply. However, some or all of the services provided may not be covered by your insurance, and you are responsible for any and all fees not covered or only partially covered by insurance. It is your sole responsibility to timely provide us with accurate and current insurance information. Your insurance is a contract between you and your insurance company. It is your responsibility to know and understand the level of service covered by your insurance.</p>
+    <p>I, the undersigned, hereby authorize the release of any and all information or documents to all parties related to obtaining my insurance benefits for claims submitted on behalf of myself and/or dependents. I further expressly agree and acknowledge that my signature on this document authorizes Whole Health Infusion Clinic and all parties it deems necessary to submit claims to obtain benefits and reimbursement for services rendered, without obtaining my signature on each and every claim to be submitted for myself and/or dependents, and that I will be bound by this signature as if the undersigned had personally signed the particular claim.</p>
+    <p>I hereby authorize my insurance company to pay and hereby assign directly to Whole Health Infusion Clinic, all benefits. I understand I am ultimately financially responsible for all charges incurred. I further acknowledge that any insurance benefits, when received by and paid will be credited to my account in accordance with my insurance company's assignment. Any unpaid charges are my responsibility.</p>
+    <p>Patient balances are due immediately and are not contingent upon receiving a statement. Insurance companies provide an explanation of benefits outlining payments and patient balances. Should I fail to pay unpaid charges for more than 30 days, I authorize unpaid charges to be charged to the credit card provided and on file (if any). Unpaid charges over 60 days will incur a monthly service fee of at least $25.00. Accounts with no activity for 60 days may be forwarded for further collection action. If I default and my account is referred to a collection agency or attorney, I will be responsible for all costs of collecting monies owed, including interest, court costs, collection, collection agency and attorney fees. Any and all advance collection fees incurred by the practice will be included in my final bill. I understand and agree that some additional charges may come through from my treatments that are not included in the initial estimated bill. There is a $25.00 service charge for each and every returned check.</p>
+    <p>I give my consent to Whole Health Infusion to provide medical care and treatment to the below named patient deemed necessary and proper in diagnosing or treating his/her/my physical condition. I acknowledge that I understand and agree to the terms outlined above.</p>
+    <div class="signature-section">
+      <!-- Dropdown -->
+      <div class="form-group">
+        <label for="signerType">Who is signing this form?</label>
+        <select id="signerType" name="signerType" onchange="toggleSignatureFields()" required>
+          <option value="">Select Signer</option>
+          <option value="patient">Patient</option>
+          <option value="caregiver">Caregiver</option>
+        </select>
+      </div>
+
+      <!-- Patient Signature Section -->
+      <div id="patientSignatureWrapper" style="display: none;">
+        <div class="form-group">
+          <label for="patientName">Patient Name:</label>
+          <input id="patientName" name="patientName" placeholder="Enter Patient's Full Name" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="signatureCanvas">Patient Signature:</label>
+          <div class="form-row">
+            <canvas id="signatureCanvas" width="400" height="100" style="border: 1px solid #ccc;"></canvas>
+            <div>
+              <label for="patientSignedOn">Signed on:</label>
+              <input type="date" id="patientSignedOn" name="patientSignedOn" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="button" id="clearSignature">Clear</button>
+          </div>
+          <p><small>Sign within the box above using your mouse or finger (on touch devices).</small></p>
+          <input type="hidden" id="signatureData" name="signatureData">
+        </div>
+      </div>
+
+      <!-- Caregiver Signature Section -->
+      <div id="caregiverSignatureWrapper" style="display: none;">
+        <div class="form-group">
+          <label for="caregiverName">Caregiver Name:</label>
+          <input id="caregiverName" name="caregiverName" placeholder="Enter Caregiver's Full Name" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="caregiverSignatureCanvas">Caregiver Signature:</label>
+          <div class="form-row">
+            <canvas id="caregiverSignatureCanvas" width="400" height="100" style="border: 1px solid #ccc;"></canvas>
+            <div>
+              <label for="caregiverSignedOn">Signed on:</label>
+              <input type="date" id="caregiverSignedOn" name="caregiverSignedOn" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="button" id="clearCaregiverSignature">Clear</button>
+          </div>
+          <p><small>Sign within the box above using your mouse or finger (on touch devices).</small></p>
+          <input type="hidden" id="caregiverSignatureData" name="caregiverSignatureData">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">CONSENT FOR COMMUNICATION VIA EMAIL AND TEXT MESSAGE</div>
+  <div class="form-group">
+    <p>I, <input type="text" id="patientNameCommunication" name="patientNameCommunication" placeholder="Enter Patient's Full Name" style="width: 300px; display: inline-block;">, hereby consent to have the staff of Whole Health Infusion Clinic, which may include pharmacists, reimbursement and billing staff and nurse practitioners involved in my care communicate with me and my physicians, where appropriate, via e-mailing or text messaging regarding the following aspects of my medical care and treatment: test results, prescriptions, appointments, billing, etc. I understand that e-mail and/or text message is not a confidential method of communication and may have the following risks:</p>
+    <ul>
+      <li>Emails and texts can be circulated, forwarded, stored electronically and on paper, and broadcast to unintended recipients.</li>
+      <li>Senders can easily misaddress an email or text and send the information to an undesired recipient.</li>
+      <li>Backup copies of emails and texts may exist even after the sender and/or the recipient has deleted his or her copy.</li>
+      <li>Your employers and/or on-line services may have a right to inspect emails and texts sent through their systems.</li>
+      <li>Emails and texts can be intercepted, altered, forwarded or used without authorization or detection or errors can occur in the transmission.</li>
+      <li>Emails and texts can be used as evidence in court.</li>
+      <li>Emails and texts may not be a reliable means of communication.</li>
+      <li>Email and text messaging may not be secure, and therefore it is possible that a third party may breach the confidentiality of such communications.</li>
+    </ul>
+    <p>I further understand that there is a risk that e-mail or text message communications between my physician and me or members of my physician’s office staff, or between my physician and other physicians, nurse practitioners and pharmacists regarding my medical care and treatment may be intercepted by third parties or transmitted to unintended parties. I also understand that any e-mail or text message communications between my physician and me or members of his office staff, or between my physician and other physicians, nurse practitioners or pharmacists regarding my medical care and treatment will be printed out and made a part of my medical record. I understand that in an urgent or emergent situation I should call my provider or go to the Emergency Room and not rely on e-mail or text message. I agree not to disclose sensitive medical information such as information relating to HIV, mental health or substance abuse. I understand and acknowledge that Whole Health Infusion Clinic cannot guarantee the privacy, security or confidentiality of information transmitted via email or text. I understand that I may revoke my consent at any time by advising Whole Health Infusion Clinic in writing.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email">
+      </div>
+      <div class="form-group">
+        <label for="textPhone">Cell Phone Number for Text Messages:</label>
+        <input type="tel" id="textPhone" name="textPhone">
+      </div>
+    </div>
+    <div class="checkbox-group" style="display: flex; align-items: center;">
+      <input type="checkbox" id="noEmailTextConsent" name="noEmailTextConsent" style="margin-right: 10px;">
+      <span for="noEmailTextConsent">I <strong>DO NOT</strong> consent to email and text message communication.</span>
+    </div>
+  </div>
+
+  <div class="section-header">PATIENT CONSENT FOR TREATMENT</div>
+  <div class="form-group">
+    <p>I have been given sufficient information to make an informed decision and consent to treatment. I am aware of the potential benefits, side effects and contraindications of the infusion medication and infusion therapy that my physician has ordered. I understand that I have the right to refuse the recommended therapy at any time. I acknowledge that I have read and fully understand this consent, related documents, and that all blanks or statements requiring insertion or completion were filled in before I affixed my signature. No guarantees or promises have been made to me regarding the outcome of the treatment. I also authorize the company to photograph, video and/or use any other mediums which result in the permanent documentation of my image for safety, medical, scientific or educational purposes. I agree that any such photographs taken pursuant to this authorization, which are not required by law to be retained, may be disposed of by the company so long as the manner of disposition shall be permanent destruction.</p>
+    <h4 style="text-align: center;">Hepatitis B Virus Consent for Treatment</h4>
+    <p>For patients on the following medications: Actemra, Cimzia, Inflectra, Orencia, Remicade, Rituxan, Simponi Aria: If I have not had a Hepatitis B Virus (HBV) vaccination or I refuse such vaccination, I understand that due to my exposure to potentially infectious material, I may be at risk of acquiring HBV. I understand that by not obtaining this vaccine, I continue to be at an increased risk of acquiring HBV, a serious disease.</p>
+    <h4 style="text-align: center;">Pregnancy and Breastfeeding Consent for Treatment</h4>
+    <div class="radio-group">
+      <label style="font-weight: bold;">Please select one (for females):</label><br>
+      <input type="radio" id="notPregnant" name="pregnancyStatus" value="notPregnant">
+      <span for="notPregnant">I am not pregnant now and have no reason to suspect that I am pregnant. I am aware of the potential risks, known and unknown, to the fetus if I become pregnant during treatment including miscarriage or congenital deformity. If I should become pregnant, I will notify the clinical staff immediately.</span><br>
+      <input type="radio" id="pregnant" name="pregnancyStatus" value="pregnant">
+      <span for="pregnant">I am pregnant, will continue treatment and am aware of the potential risks, known and unknown, to the fetus including miscarriage or congenital deformity.</span><br>
+      <input type="radio" id="breastfeeding" name="pregnancyStatus" value="breastfeeding">
+      <span for="breastfeeding">I am breastfeeding and will continue breastfeeding while receiving treatment. I am aware of the potential risks, known and unknown to my breastfeeding child while receiving treatment.</span>
+    </div>
+    <h4 style="text-align: center;">Patient Privacy Notification</h4>
+    <p>As permitted by the Health Insurance Portability and Accountability Act (HIPAA), I understand that my protected health information may be used and disclosed by my physician, office staff, and others outside of these offices who are involved in my care and treatment for the purpose of providing health care services. Although all NP's, RN's and infusion center staff will attempt to conceal written medical information, I understand that other patients or staff in the infusion center may overhear the staff when medical information is provided to me. I further acknowledge that the infusion center is an open treatment area that may be monitored by video surveillance. By signing this page I give my consent to be monitored and recorded by video. By signing this page, I acknowledge that I have read and fully understand the above statement.</p>
+    <h4 style="text-align: center;">Employee Incident</h4>
+    <p>In case of an employee needle stick injury or exposure to blood/body fluids, you consent to have your labs drawn by our clinical staff which would include, but not be limited to, Hepatitis B, Hepatitis C, and HIV.</p>
+    <h4 style="text-align: center;">Patient Handouts</h4>
+    <p>I have received a copy of patient handouts that contains, or, I have been provided the pharmacy’s website address that contains: Patient Bill Of Rights and Responsibilities, HIPAA Privacy Notice, Emergency Planning, Home Safety, Infection Control, Making Decisions about Your Health Care, How to Place a Prescription Order, How to Obtain a Refill, How to Access Medications In Case of an Emergency or Disaster, How to Check on a Prescription Order, Information on Prescription Drug Substitutions, How to Transfer a Prescription to another Pharmacy, How to Obtain Medications Not Available at the Pharmacy, How to Handle Medication Recalls, How to Dispose of Medications, How to Handle Adverse Reactions and Grievance / Complaint Reporting.</p>
+    <p>I have received monograph/instructions for medications received. I have received pharmacy marketing material and information on the pharmacy’s scope of services. I have received instructions on how to follow up with Whole Health Infusion Clinic.</p>
+  </div>
+
+  <div class="section-header">INFUSION CONSENT AND DISCLOSURE</div>
+  <div class="form-group">
+    <p><strong>TO THE PATIENT (AND OTHERS LEGALLY RESPONSIBLE FOR THE PATIENT):</strong> You have the right as a patient, to be informed about your condition and how Infusion therapy medicine may be applied in a treatment plan. This disclosure is intended to provide an opportunity for you to make an informed decision so that you may give or withhold your consent to treatment. I voluntarily request that Whole Health Infusion Clinic and other affiliated health care personnel as they may deem necessary, treat my condition (or the condition of the person for whom I am responsible). I understand that the treatment is planned for me (or the person for whom I am responsible), and I voluntarily consent and authorize to be treated.</p>
+    <p><strong><em>I understand that no warranty or guarantee has been made regarding the results of treatment.</em></strong> I realize that there may be risks and hazards in treating this present health condition, with or without conventional medicine, and there may also be risks and hazards related to the planned treatment; including worsening of present symptoms, development of new symptoms, possible undesirable interactions between various treatments. Serious infusion reactions have been reported with Infliximab, including hives, difficulty breathing, and low blood pressure. Reactions have occurred during or after infusions. In clinical studies, some people experienced the following common side effects: respiratory infections (that may include sinus infections and sore throat), coughing, and stomach pain or mild reactions to infusion such as rash or itchy skin. The reports of serious infections, including tuberculosis (TB) and Reports of lymphoma (a type of cancer) in patients on Infliximab and other TNF blockers are rare but occur more often than in the general population. Some of these infections have been fatal. Nervous system disorders have also been reported.</p>
+    <p>I have been given an opportunity to ask questions about the treatment of this health condition using conventional methods with my ordering provider. I have had an opportunity to discuss the possible risks and hazards of treatment and non-treatment with my ordering provider, and I believe that I have sufficient information to give this informed consent.</p>
+    <p>I certify that I have read this form (or have asked to have it read to me), and that I understand its contents. I also certify that neither Whole Health Infusion Clinic nor any affiliated staff have made guarantees to me as to the success of this treatment.</p>
+    <div class="signature-section">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="infusionSignatureCanvas">Patient/Responsible Party Signature:</label>
+          <canvas id="infusionSignatureCanvas" width="400" height="100" style="border: 1px solid #ccc;"></canvas>
+          <div class="form-group">
+            <button type="button" id="clearInfusionSignature">Clear</button>
+          </div>
+          <p><small>Sign within the box above using your mouse or finger (on touch devices).</small></p>
+          <input type="hidden" id="infusionSignatureData" name="infusionSignatureData">
+        </div>
+        <div class="form-group">
+          <label for="infusionRelationship">Relationship to Patient:</label>
+          <input type="text" id="infusionRelationship" name="infusionRelationship">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="infusionPatientName">Patient Name (Print):</label>
+          <input type="text" id="infusionPatientName" name="infusionPatientName" required>
+        </div>
+        <div class="form-group">
+          <label for="infusionDate">Date:</label>
+          <input type="date" id="infusionDate" name="infusionDate" required>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit">Submit Information</button>
+</form>
+
+<div id="response"></div>
+
+<script>
+  // Show/hide policy holder info based on radio selection
+  function togglePolicyHolderInfo(radioName, infoId) {
+    document.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const policyHolderInfo = document.getElementById(infoId);
+        policyHolderInfo.style.display = e.target.value === 'no' ? 'block' : 'none';
+      });
+    });
+  }
+
+  togglePolicyHolderInfo('primarySameAsPatient', 'primaryPolicyHolderInfo');
+  togglePolicyHolderInfo('secondarySameAsPatient', 'secondaryPolicyHolderInfo');
+  togglePolicyHolderInfo('tertiarySameAsPatient', 'tertiaryPolicyHolderInfo');
+
+  // Signature functionality
+  function isCanvasEmpty(canvas) {
+    const context = canvas.getContext('2d');
+    const pixelBuffer = new Uint32Array(
+            context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
+    );
+    return !pixelBuffer.some(color => color !== 0);
+  }
+
+  function setupCanvas(canvas) {
+    const ctx = canvas.getContext('2d');
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'black';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    return ctx;
+  }
+
+  function startDrawing(e, canvas, context, lastPos) {
+    lastPos.drawing = true;
+    const rect = canvas.getBoundingClientRect();
+    lastPos.x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+    lastPos.y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+    context.beginPath();
+    context.moveTo(lastPos.x, lastPos.y);
+  }
+
+  function draw(e, canvas, context, lastPos, dataInput) {
+    if (!lastPos.drawing) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const currentX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+    const currentY = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+    context.beginPath();
+    context.moveTo(lastPos.x, lastPos.y);
+    context.lineTo(currentX, currentY);
+    context.stroke();
+    lastPos.x = currentX;
+    lastPos.y = currentY;
+  }
+
+  function stopDrawing(canvas, lastPos, dataInput) {
+    if (lastPos.drawing) {
+      lastPos.drawing = false;
+      if (!isCanvasEmpty(canvas)) {
+        dataInput.value = canvas.toDataURL();
+      }
+    }
+  }
+
+  // Initialize signature canvases for Financial Payment Policy
+  const signatureCanvas = document.getElementById('signatureCanvas');
+  const signatureDataInput = document.getElementById('signatureData');
+  const clearSignatureButton = document.getElementById('clearSignature');
+  const patientCtx = setupCanvas(signatureCanvas);
+  const patientLastPos = { drawing: false, x: 0, y: 0 };
+
+  const caregiverSignatureCanvas = document.getElementById('caregiverSignatureCanvas');
+  const caregiverSignatureDataInput = document.getElementById('caregiverSignatureData');
+  const clearCaregiverSignatureButton = document.getElementById('clearCaregiverSignature');
+  const caregiverCtx = setupCanvas(caregiverSignatureCanvas);
+  const caregiverLastPos = { drawing: false, x: 0, y: 0 };
+
+  // Patient signature event listeners (Financial Payment Policy)
+  signatureCanvas.addEventListener('mousedown', (e) => startDrawing(e, signatureCanvas, patientCtx, patientLastPos));
+  signatureCanvas.addEventListener('mousemove', (e) => draw(e, signatureCanvas, patientCtx, patientLastPos, signatureDataInput));
+  signatureCanvas.addEventListener('mouseup', () => stopDrawing(signatureCanvas, patientLastPos, signatureDataInput));
+  signatureCanvas.addEventListener('mouseout', () => stopDrawing(signatureCanvas, patientLastPos, signatureDataInput));
+  signatureCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startDrawing(e, signatureCanvas, patientCtx, patientLastPos);
+  });
+  signatureCanvas.addEventListener('touchmove', (e) => draw(e, signatureCanvas, patientCtx, patientLastPos, signatureDataInput));
+  signatureCanvas.addEventListener('touchend', () => stopDrawing(signatureCanvas, patientLastPos, signatureDataInput));
+
+  // Caregiver signature event listeners (Financial Payment Policy)
+  caregiverSignatureCanvas.addEventListener('mousedown', (e) => startDrawing(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos));
+  caregiverSignatureCanvas.addEventListener('mousemove', (e) => draw(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos, caregiverSignatureDataInput));
+  caregiverSignatureCanvas.addEventListener('mouseup', () => stopDrawing(caregiverSignatureCanvas, caregiverLastPos, caregiverSignatureDataInput));
+  caregiverSignatureCanvas.addEventListener('mouseout', () => stopDrawing(caregiverSignatureCanvas, caregiverLastPos, caregiverSignatureDataInput));
+  caregiverSignatureCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startDrawing(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos);
+  });
+  caregiverSignatureCanvas.addEventListener('touchmove', (e) => draw(e, caregiverSignatureCanvas, caregiverCtx, caregiverLastPos, caregiverSignatureDataInput));
+  caregiverSignatureCanvas.addEventListener('touchend', () => stopDrawing(caregiverSignatureCanvas, caregiverLastPos, caregiverSignatureDataInput));
+
+  // Clear signature buttons (Financial Payment Policy)
+  clearSignatureButton.addEventListener('click', () => {
+    patientCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    signatureDataInput.value = '';
+    document.getElementById('patientSignedOn').value = '';
+  });
+
+  clearCaregiverSignatureButton.addEventListener('click', () => {
+    caregiverCtx.clearRect(0, 0, caregiverSignatureCanvas.width, caregiverSignatureCanvas.height);
+    caregiverSignatureDataInput.value = '';
+    document.getElementById('caregiverSignedOn').value = '';
+  });
+
+  // Initialize signature canvas for Infusion Consent and Disclosure
+  const infusionSignatureCanvas = document.getElementById('infusionSignatureCanvas');
+  const infusionSignatureDataInput = document.getElementById('infusionSignatureData');
+  const clearInfusionSignatureButton = document.getElementById('clearInfusionSignature');
+  const infusionCtx = setupCanvas(infusionSignatureCanvas);
+  const infusionLastPos = { drawing: false, x: 0, y: 0 };
+
+  // Infusion signature event listeners
+  infusionSignatureCanvas.addEventListener('mousedown', (e) => startDrawing(e, infusionSignatureCanvas, infusionCtx, infusionLastPos));
+  infusionSignatureCanvas.addEventListener('mousemove', (e) => draw(e, infusionSignatureCanvas, infusionCtx, infusionLastPos, infusionSignatureDataInput));
+  infusionSignatureCanvas.addEventListener('mouseup', () => stopDrawing(infusionSignatureCanvas, infusionLastPos, infusionSignatureDataInput));
+  infusionSignatureCanvas.addEventListener('mouseout', () => stopDrawing(infusionSignatureCanvas, infusionLastPos, infusionSignatureDataInput));
+  infusionSignatureCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startDrawing(e, infusionSignatureCanvas, infusionCtx, infusionLastPos);
+  });
+  infusionSignatureCanvas.addEventListener('touchmove', (e) => draw(e, infusionSignatureCanvas, infusionCtx, infusionLastPos, infusionSignatureDataInput));
+  infusionSignatureCanvas.addEventListener('touchend', () => stopDrawing(infusionSignatureCanvas, infusionLastPos, infusionSignatureDataInput));
+
+  // Clear infusion signature button
+  clearInfusionSignatureButton.addEventListener('click', () => {
+    infusionCtx.clearRect(0, 0, infusionSignatureCanvas.width, infusionSignatureCanvas.height);
+    infusionSignatureDataInput.value = '';
+    document.getElementById('infusionDate').value = '';
+  });
+
+  // Show/hide signature sections for Financial Payment Policy
+  function toggleSignatureFields() {
+    const signerType = document.getElementById('signerType').value;
+    const patientSignatureWrapper = document.getElementById('patientSignatureWrapper');
+    const caregiverSignatureWrapper = document.getElementById('caregiverSignatureWrapper');
+
+    // Hide both sections by default
+    patientSignatureWrapper.style.display = 'none';
+    caregiverSignatureWrapper.style.display = 'none';
+
+    if (signerType === 'patient') {
+      // Show patient signature section
+      patientSignatureWrapper.style.display = 'block';
+      // Clear caregiver fields
+      document.getElementById('caregiverName').value = '';
+      document.getElementById('caregiverSignedOn').value = '';
+      document.getElementById('caregiverSignatureData').value = '';
+      caregiverCtx.clearRect(0, 0, caregiverSignatureCanvas.width, caregiverSignatureCanvas.height);
+    } else if (signerType === 'caregiver') {
+      // Show caregiver signature section
+      caregiverSignatureWrapper.style.display = 'block';
+      // Clear patient fields
+      document.getElementById('patientName').value = '';
+      document.getElementById('patientSignedOn').value = '';
+      document.getElementById('signatureData').value = '';
+      patientCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    }
+  }
+
+  // Initialize form on load
+  document.addEventListener('DOMContentLoaded', () => {
+    toggleSignatureFields(); // Hide both signature sections initially
+  });
+
+  document.getElementById('patientInfoForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Replace this URL with your n8n webhook URL
+    const webhookUrl = 'YOUR_N8N_WEBHOOK_URL';
+
+    // Get form data
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.text();
+
+      // Display the response
+      const responseDiv = document.getElementById('response');
+      responseDiv.style.display = 'block';
+      responseDiv.innerHTML = result;
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while submitting the form.');
+    }
+  });
+</script>
+</body>
+</html>
