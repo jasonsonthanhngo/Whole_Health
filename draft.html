@@ -86,14 +86,49 @@
             background-color: #f9f9f9;
             color: #666;
         }
+        @page {
+            size: A4;
+            margin: 20mm;
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+        .running-footer {
+            display: block;
+            position: running(footer);
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+        }
         @media print {
             .signature-container { break-inside: avoid; }
+            /* Hide interactive elements during print */
+            button, select, canvas, .electronic-signature button, .clear-button-container {
+                display: none;
+            }
+            /* Ensure input fields look like text */
+            input[type="text"], input[type="date"] {
+                border: none;
+                background: transparent;
+                padding: 0;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+            }
+            /* Style checkboxes for print */
+            input[type="checkbox"]:checked:before {
+                content: '☑';
+                font-size: 16px;
+            }
+            input[type="checkbox"]:not(:checked):before {
+                content: '☐';
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 <h1 style="text-align: center;">Whole Health Infusion Clinic<br />Consent Form</h1>
-<p style="text-align: center;">1415 N Broadway, Santa Ana, CA 92706</p>
 
 <div class="section">
     <h2 style="text-align: center;">Patient Information</h2>
@@ -129,15 +164,15 @@
     <h2 style="text-align: center;">Pregnancy/Breastfeeding Consent</h2>
     <div class="form-group" style="margin-left: 40px;">
         <input type="checkbox" id="checkbox1" name="pregnancyConsent" value="notPregnant">
-        <label for="checkbox1">I am not pregnant now and have no reason to suspect that I am pregnant. I am aware of the potential risks, known and unknown, to the fetus if I become pregnant during treatment including miscarriage or congenital deformity. If I should become pregnant, I will notify the clinical staff immediately.</label>
+       I am not pregnant now and have no reason to suspect that I am pregnant. I am aware of the potential risks, known and unknown, to the fetus if I become pregnant during treatment including miscarriage or congenital deformity. If I should become pregnant, I will notify the clinical staff immediately.
     </div>
     <div class="form-group" style="margin-left: 40px;">
         <input type="checkbox" id="checkbox2" name="pregnancyConsent" value="isPregnant">
-        <label for="checkbox2">I am pregnant, will continue treatment and am aware of the potential risks, known and unknown, to the fetus including miscarriage or congenital deformity.</label>
+        I am pregnant, will continue treatment and am aware of the potential risks, known and unknown, to the fetus including miscarriage or congenital deformity.
     </div>
     <div class="form-group" style="margin-left: 40px;">
         <input type="checkbox" id="checkbox3" name="pregnancyConsent" value="breastfeeding">
-        <label for="checkbox3">I am breastfeeding and will continue breastfeeding while receiving treatment. I am aware of the potential risks, known and unknown to my breastfeeding child while receiving treatment.</label>
+        I am breastfeeding and will continue breastfeeding while receiving treatment. I am aware of the potential risks, known and unknown to my breastfeeding child while receiving treatment.
     </div>
 </div>
 
@@ -580,9 +615,14 @@
             .signature-container { break-inside: avoid; }
         }
         @page {
-            margin: 20mm 20mm 10mm 20mm;
-            @top-center { content: none; }
-            @bottom-center { content: none; }
+            size: A4;
+            margin-top: 1.2cm;
+            margin-bottom: 1.2cm;
+            margin-left: 1.2cm;
+            margin-right: 1.2cm;
+            @bottom-right {
+                content: "${patientLastName},${patientFirstName} DOB:${birthdate} Consent " counter(page) "/" counter(pages);
+            }
         }
     </style>
 </head>
@@ -608,7 +648,7 @@
                     <input type="text" value="${patientPhoneNumber}" readonly style="width: 300px;">
                 </div>
                 <p style="text-align: justify;">I have been given sufficient information to make an informed decision and consent to treatment. I am aware of the potential benefits, side effects and contraindications of the infusion medication and infusion therapy that my physician has ordered. I understand that I have the right to refuse the recommended therapy at any time. I acknowledge that I have read and fully understand this consent, related documents, and that all blanks or statements requiring insertion or completion were filled in before I affixed my signature. No guarantees or promises have been made to me regarding the outcome of the treatment. I also authorize the company to photograph, video and/or use any other mediums which result in the permanent documentation of my image for safety, medical, scientific or educational purposes. I agree that any such photographs taken pursuant to this authorization, which are not required by law to be retained, may be disposed of by the company so long as the manner of disposition shall be permanent destruction.</p>
-                <p style="text-align: center;"><strong>HEPATITIS Bándose VIRUS CONSENT FOR TREATMENT</strong></p>
+                <p style="text-align: center;"><strong>HEPATITIS B VIRUS CONSENT FOR TREATMENT</strong></p>
                 <p style="text-align: justify;">For patients on the following medications: Actemra, Cimzia, Inflectra, Orencia, Remicade, Rituxan, Simponi Aria: If I have not had a Hepatitis B Virus (HBV) vaccination or I refuse such vaccination, I understand that due to my exposure to potentially infectious material, I may be at risk of acquiring HBV. I understand that by not obtaining this vaccine, I continue to be at an increased risk of acquiring HBV, a serious disease.</p>
                 <p style="text-align: center;"><strong>PREGNANCY AND BREASTFEEDING CONSENT FOR TREATMENT</strong></p>
                 <p style="text-align: justify;">For females: Please check one (1) of the following:</p>
