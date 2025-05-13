@@ -1,0 +1,151 @@
+{
+  "name": "Patient Information Form Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "df70e8a7-8465-4195-aae9-da02b6acdae0",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "43cfe51a-ee02-400d-aab5-5ecf37431c44",
+      "name": "Webhook",
+      "webhookId": "df70e8a7-8465-4195-aae9-da02b6acdae0"
+    },
+    {
+      "parameters": {
+        "html": "{{ $json.body.html }}"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "d0623174-d001-436e-992c-8302fb36024a",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Retrieve the generated HTML content from the HTML Node\nconst htmlContent = $input.first().json.html;\n\n// Assign the HTML content to the htmlOutput field\nreturn {\n  htmlOutput: htmlContent\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "9664f3ff-28da-4a2a-bcb4-04cccacbdeaa",
+      "name": "ProcessHTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "const htmlContent = $input.first().json.htmlOutput;\nconst webhookData = $('Webhook').first().json.body;\nconst patientName = webhookData.formData.patientName;\nconst birthdate = webhookData.formData.birthdate;\nconst today = new Date();\nconst date = today.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });\n\nconst attachment = {\n  name: `${patientName} DOB ${birthdate} Patient Information Form ${date}.html`,\n  mimeType: 'text/html',\n  content: Buffer.from(htmlContent, 'utf8').toString('base64'),\n};\n\nreturn [\n  {\n    json: {},\n    binary: {\n      attachment: {\n        data: attachment.content,\n        type: attachment.mimeType,\n        fileName: attachment.name,\n      },\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "a818fe61-2402-4afb-a6d8-0a4d49a476b8",
+      "name": "CreateAttachment"
+    },
+    {
+      "parameters": {
+        "sendTo": "jasonsonthanhngo@gmail.com",
+        "subject": "={{ $('Webhook').item.json.body.formData.patientLastName }}, {{ $('Webhook').item.json.body.formData.patientFirstName }} DOB: {{ $('Webhook').item.json.body.formData.birthdate }} Patient Information Form",
+        "message": "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Patient Information Form Submission</title>\n</head>\n<body>\n<p><span style=\"font-size:22px;\"><strong><span style=\"font-family:arial,helvetica,sans-serif;\">Patient Signed Information Form</span></strong></span></p>\n\n<ol>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Download attached file.</span></span></li>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Open downloaded file in Google Chrome or an internet browser.</span></span></li>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Right click anywhere in the open file, Select \"<strong>Print</strong>\".</span></span></li>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Destination choose \"<span style=\"color:#FF0000;\"><strong>Save as PDF</strong></span>\".</span></span></li>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Save PDF.</span></span></li>\n\t<li><span style=\"font-size:22px;\"><span style=\"font-family:arial,helvetica,sans-serif;\">Attach PDF to Salesforce.</span></span></li>\n</ol>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "attachment"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        860,
+        0
+      ],
+      "id": "b9e0e61c-23e2-435d-8d82-1444917b3ac4",
+      "name": "Gmail",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tsdIzVA9wI6JCwny",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "ProcessHTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ProcessHTML": {
+      "main": [
+        [
+          {
+            "node": "CreateAttachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CreateAttachment": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6e1de522-f9c4-4c0e-9838-2b21dbb95ae9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a18d48e787c1b6b4626ef4ab4898e2d635df06b17275beb00c2ac42f4a70a15c"
+  },
+  "id": "eBi6JBRetpOaxcjg",
+  "tags": []
+}

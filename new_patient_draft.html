@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Whole Health Infusion Clinic - Patient Information</title>
+  <script src="https://cdn.jsdelivr.net/npm/juice@10.0.0/dist/juice.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 1000px;
       margin: 0 auto;
       padding: 20px;
+      box-sizing: border-box;
     }
     .logo {
       text-align: center;
@@ -26,18 +27,46 @@
     }
     .section-header {
       text-align: center;
-      background-color: #000;
-      color: white;
+      background-color: #000 !important;
+      color: white !important;
       padding: 8px;
       margin: 20px 0 10px 0;
+      break-after: avoid; /* Prevent page break immediately after the header */
     }
     .form-group {
       margin-bottom: 15px;
+      break-inside: avoid; /* Try to keep form groups together */
     }
     .form-row {
       display: flex;
       gap: 20px;
       margin-bottom: 15px;
+      break-inside: avoid; /* Try to keep form rows together */
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-wrap: wrap;
+      break-inside: avoid; /* Try to keep checkbox groups together */
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checkbox-item input[type="checkbox"] {
+      margin: 0;
+    }
+    .checkbox-item label {
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+    .no-consent-checkbox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
     }
     label {
       display: block;
@@ -53,9 +82,11 @@
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      box-sizing: border-box;
     }
     .checkbox-group, .radio-group {
       margin: 10px 0;
+      break-inside: avoid; /* Try to keep radio groups together */
     }
     .radio-group label {
       display: inline;
@@ -82,6 +113,197 @@
     }
     .signature-section {
       margin-top: 20px;
+      break-before: avoid; /* Try to keep signature section with the financial policy */
+    }
+    .address-field {
+      flex: 1;
+      min-width: 0;
+    }
+    .street-field {
+      flex: 3;
+      min-width: 150px;
+    }
+    .city-field {
+      flex: 2;
+      min-width: 100px;
+    }
+    .state-field {
+      flex: 1;
+      min-width: 60px;
+    }
+    .zip-field {
+      flex: 1;
+      min-width: 80px;
+    }
+    .alert-notification {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 15px 20px;
+      background-color: #f0f0f0;
+      color: #333;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .alert-notification.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .alert-notification.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .alert-notification .close-btn {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: inherit;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+    @media screen and (max-width: 768px) {
+      .address-field {
+        flex: 100%;
+      }
+      .checkbox-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+    @media print {
+      @page {
+        size: A4;
+        margin-top: 1.2cm;
+        margin-bottom: 1.2cm;
+        margin-left: 1.2cm;
+        margin-right: 1.2cm;
+        @bottom-right {
+          content: "${patientInfoFooter} " counter(page) "/" counter(pages);
+        }
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-size: 10pt; /* Slightly smaller font for print */
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 10px; /* Less margin in print */
+      }
+      h1 {
+        font-size: 1.5em; /* Smaller heading in print */
+        margin-bottom: 5px;
+      }
+      h2 {
+        font-size: 1.2em; /* Smaller subheading in print */
+        margin-bottom: 8px;
+      }
+      .section-header {
+        background-color: #000 !important;
+        color: white !important;
+        padding: 6px;
+        margin: 10px 0 5px 0; /* Less margin for headers in print */
+        font-size: 1em;
+      }
+      #response {
+        display: none;
+      }
+      button[type="submit"], button[type="button"] {
+        display: none;
+      }
+      canvas {
+        display: none;
+      }
+      /* Force Patient and Physician Info onto one page */
+      #patientInfoSection,
+      #physicianInfoSection {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* NEW: Prevent break after Patient Info header */
+      .section-header:has(+ #physicianInfoSection) {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      .first-page-sections {
+        page-break-after: always;
+        break-after: page;
+      }
+      .insurance-sections-wrapper {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .insurance-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 20px;
+      }
+      .signature-section,
+      .consent-section {
+        break-before: always;
+      }
+      .print-always-visible {
+        display: block !important;
+      }
+      .print-always-visible input:not([value]):not([value=""]) {
+        border-bottom: 1px dashed #ccc;
+        background-color: #f9f9f9;
+      }
+      input[readonly],
+      textarea[readonly] {
+        background-color: transparent !important;
+        border: 1px solid #ccc !important;
+        color: inherit !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      input:focus, select:focus, textarea:focus {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      input[type="checkbox"][readonly],
+      input[type="radio"][readonly] {
+        pointer-events: none;
+        opacity: 1 !important;
+      }
+
+      select[readonly] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent !important;
+        border: 1px solid #ccc !important;
+        color: inherit !important;
+      }
+      select[readonly]::-ms-expand,
+      select[readonly]::-webkit-select-arrow {
+        display: none !important;
+      }
+
+      button, [onclick] {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -94,279 +316,312 @@
   Please complete the following form as accurately as you are able. Inaccurate and/or incomplete information can delay our ability to authorize your treatments, obtain referrals, and file your insurance claims for payment resulting in possible delays in your treatment.
 </div>
 
+
 <form id="patientInfoForm">
-  <div class="section-header">PATIENT INFORMATION</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" name="lastName" required>
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" name="firstName" required>
-    </div>
-    <div class="form-group">
-      <label for="mi">MI:</label>
-      <input type="text" id="mi" name="mi">
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="dob">DOB:</label>
-      <input type="date" id="dob" name="dob" required>
-    </div>
-    <div class="form-group">
-      <label>Gender:</label>
-      <div class="radio-group">
-        <input type="radio" id="female" name="gender" value="female" required>
-        <label for="female">Female</label>
-        <input type="radio" id="male" name="gender" value="male">
-        <label for="male">Male</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="ssn">SSN:</label>
-      <input type="text" id="ssn" name="ssn" required>
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="tel" id="phoneNumber" name="phoneNumber" required>
-    </div>
-    <div class="form-group">
-      <label for="altPhoneNumber">Alternate Phone Number:</label>
-      <input type="tel" id="altPhoneNumber" name="altPhoneNumber">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="address">Address:</label>
-    <textarea id="address" name="address" required></textarea>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="allergies">Allergies:</label>
-      <textarea id="allergies" name="allergies"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="preferredLanguage">Preferred Language:</label>
-      <input type="text" id="preferredLanguage" name="preferredLanguage">
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="emergencyContact">Emergency Contact:</label>
-      <input type="text" id="emergencyContact" name="emergencyContact" required>
-    </div>
-    <div class="form-group">
-      <label for="emergencyPhone">Emergency Contact Phone:</label>
-      <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label>Advance Directive Status:</label>
-    <div class="checkbox-group">
-      <input type="checkbox" id="noDirective" name="advanceDirective" value="noDirective">
-      <label for="noDirective">No Directive</label>
-      <input type="checkbox" id="hasLivingWill" name="advanceDirective" value="hasLivingWill">
-      <label for="hasLivingWill">Has Living Will</label>
-      <input type="checkbox" id="healthcarePOA" name="advanceDirective" value="healthcarePOA">
-      <label for="healthcarePOA">Healthcare POA</label>
-    </div>
-  </div>
-
-  <div class="section-header">PHYSICIAN INFORMATION</div>
-  <div class="form-group">
-    <label for="referringPhysician">Referring Physician whom referred you to our infusion:</label>
-    <input type="text" id="referringPhysician" name="referringPhysician" required>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="primaryCarePhysician">Primary Care Physician:</label>
-      <input type="text" id="primaryCarePhysician" name="primaryCarePhysician" required>
-    </div>
-    <div class="form-group">
-      <label for="physicianPhone">Phone:</label>
-      <input type="tel" id="physicianPhone" name="physicianPhone">
-    </div>
-    <div class="form-group">
-      <label for="physicianFax">Fax:</label>
-      <input type="tel" id="physicianFax" name="physicianFax">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="physicianAddress">Physician Address:</label>
-    <textarea id="physicianAddress" name="physicianAddress"></textarea>
-  </div>
-
-  <div class="section-header">PRIMARY INSURANCE INFORMATION</div>
-  <div class="insurance-section">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="primaryInsuranceName">Insurance Name:</label>
-        <input type="text" id="primaryInsuranceName" name="primaryInsuranceName" required>
-      </div>
-      <div class="form-group">
-        <label for="primaryInsurancePhone">Phone:</label>
-        <input type="tel" id="primaryInsurancePhone" name="primaryInsurancePhone">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="primaryPolicyId">Policy ID#:</label>
-        <input type="text" id="primaryPolicyId" name="primaryPolicyId" required>
-      </div>
-      <div class="form-group">
-        <label for="primaryGroupNumber">Group #:</label>
-        <input type="text" id="primaryGroupNumber" name="primaryGroupNumber">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Is the policy holder the same as the patient?</label>
-      <div class="radio-group">
-        <input type="radio" id="primarySameYes" name="primarySameAsPatient" value="yes">
-        <label for="primarySameYes">Yes</label>
-        <input type="radio" id="primarySameNo" name="primarySameAsPatient" value="no">
-        <label for="primarySameNo">No</label>
-      </div>
-    </div>
-    <div id="primaryPolicyHolderInfo" style="display: none;">
+  <div class="first-page-sections">
+    <!-- NEW: Wrapped in container with ID -->
+    <div id="patientInfoSection">
+      <div class="section-header">PATIENT INFORMATION</div>
       <div class="form-row">
         <div class="form-group">
-          <label for="primaryPolicyHolder">Policy Holder:</label>
-          <input type="text" id="primaryPolicyHolder" name="primaryPolicyHolder">
+          <label for="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" required>
         </div>
         <div class="form-group">
-          <label for="primaryPolicyHolderDOB">DOB:</label>
-          <input type="date" id="primaryPolicyHolderDOB" name="primaryPolicyHolderDOB">
+          <label for="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+          <label for="mi">MI:</label>
+          <input type="text" id="mi" name="mi">
+        </div>
+        <div class="form-group">
+          <label for="dob">DOB:</label>
+          <input type="date" id="dob" name="dob" required>
         </div>
       </div>
+
       <div class="form-row">
+        <!--      <div class="form-group">-->
+        <!--        <label for="dob">DOB:</label>-->
+        <!--        <input type="date" id="dob" name="dob" required>-->
+        <!--      </div>-->
         <div class="form-group">
-          <label for="primaryPolicyHolderSSN">SSN:</label>
-          <input type="text" id="primaryPolicyHolderSSN" name="primaryPolicyHolderSSN">
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
         </div>
         <div class="form-group">
-          <label for="primaryRelationToPatient">Relation to patient:</label>
-          <input type="text" id="primaryRelationToPatient" name="primaryRelationToPatient">
+          <label for="ssn">SSN:</label>
+          <input type="text" id="ssn" name="ssn">
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number:</label>
+          <input type="tel" id="phoneNumber" name="phoneNumber">
+        </div>
+        <div class="form-group">
+          <label for="altPhoneNumber">Alternate Phone Number:</label>
+          <input type="tel" id="altPhoneNumber" name="altPhoneNumber">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-group address-field street-field">
+            <label for="streetAddress">Address:</label>
+            <input type="text" id="streetAddress" name="streetAddress" required>
+          </div>
+          <div class="form-group address-field city-field">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+          </div>
+          <div class="form-group address-field state-field">
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" maxlength="2" required>
+          </div>
+          <div class="form-group address-field zip-field">
+            <label for="zip">Zip Code:</label>
+            <input type="text" id="zip" name="zip" maxlength="10" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group address-field street-field">
+          <label for="allergies">Allergies:</label>
+          <input type="text" id="allergies" name="allergies">
+        </div>
+        <div class="form-group">
+          <label for="preferredLanguage">Preferred Language:</label>
+          <input type="text" id="preferredLanguage" name="preferredLanguage">
+        </div>
+        <div class="form-group">
+          <label for="emergencyContact">Emergency Contact:</label>
+          <input type="text" id="emergencyContact" name="emergencyContact">
+        </div>
+        <div class="form-group">
+          <label for="emergencyPhone">Emergency Phone:</label>
+          <input type="tel" id="emergencyPhone" name="emergencyPhone">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Advance Directive Status:</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="noDirective" name="advanceDirective" value="noDirective">
+            <label for="noDirective">No Directive</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="hasLivingWill" name="advanceDirective" value="hasLivingWill">
+            <label for="hasLivingWill">Has Living Will</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="healthcarePOA" name="advanceDirective" value="healthcarePOA">
+            <label for="healthcarePOA">Healthcare POA</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="physicianInfoSection">
+      <div class="section-header">PHYSICIAN INFORMATION</div>
+      <div class="form-group">
+        <label for="referringPhysician">Referring Physician whom referred you to our infusion:</label>
+        <input type="text" id="referringPhysician" name="referringPhysician">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="primaryCarePhysician">Primary Care Physician:</label>
+          <input type="text" id="primaryCarePhysician" name="primaryCarePhysician">
+        </div>
+        <div class="form-group">
+          <label for="physicianPhone">Phone:</label>
+          <input type="tel" id="physicianPhone" name="physicianPhone">
+        </div>
+        <div class="form-group">
+          <label for="physicianFax">Fax:</label>
+          <input type="tel" id="physicianFax" name="physicianFax">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-group address-field street-field">
+            <label for="physicianStreetAddress">Address:</label>
+            <input type="text" id="physicianStreetAddress" name="physicianStreetAddress">
+          </div>
+          <div class="form-group address-field city-field">
+            <label for="physicianCity">City:</label>
+            <input type="text" id="physicianCity" name="physicianCity">
+          </div>
+          <div class="form-group address-field state-field">
+            <label for="physicianState">State:</label>
+            <input type="text" id="physicianState" name="physicianState" maxlength="2">
+          </div>
+          <div class="form-group address-field zip-field">
+            <label for="physicianZip">Zip Code:</label>
+            <input type="text" id="physicianZip" name="physicianZip" maxlength="10">
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="section-header">SECONDARY INSURANCE INFORMATION</div>
-  <div class="insurance-section">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="secondaryInsuranceName">Insurance Name:</label>
-        <input type="text" id="secondaryInsuranceName" name="secondaryInsuranceName">
-      </div>
-      <div class="form-group">
-        <label for="secondaryInsurancePhone">Phone:</label>
-        <input type="tel" id="secondaryInsurancePhone" name="secondaryInsurancePhone">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="secondaryPolicyId">Policy ID#:</label>
-        <input type="text" id="secondaryPolicyId" name="secondaryPolicyId">
-      </div>
-      <div class="form-group">
-        <label for="secondaryGroupNumber">Group #:</label>
-        <input type="text" id="secondaryGroupNumber" name="secondaryGroupNumber">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Is the policy holder the same as the patient?</label>
-      <div class="radio-group">
-        <input type="radio" id="secondarySameYes" name="secondarySameAsPatient" value="yes">
-        <label for="secondarySameYes">Yes</label>
-        <input type="radio" id="secondarySameNo" name="secondarySameAsPatient" value="no">
-        <label for="secondarySameNo">No</label>
-      </div>
-    </div>
-    <div id="secondaryPolicyHolderInfo" style="display: none;">
+  <div class="insurance-sections-wrapper">
+    <div class="section-header">PRIMARY INSURANCE INFORMATION</div>
+    <div class="insurance-section">
       <div class="form-row">
         <div class="form-group">
-          <label for="secondaryPolicyHolder">Policy Holder:</label>
-          <input type="text" id="secondaryPolicyHolder" name="secondaryPolicyHolder">
+          <label for="primaryInsuranceName">Insurance Name:</label>
+          <input type="text" id="primaryInsuranceName" name="primaryInsuranceName">
         </div>
         <div class="form-group">
-          <label for="secondaryPolicyHolderDOB">DOB:</label>
-          <input type="date" id="secondaryPolicyHolderDOB" name="secondaryPolicyHolderDOB">
+          <label for="primaryInsurancePhone">Phone:</label>
+          <input type="tel" id="primaryInsurancePhone" name="primaryInsurancePhone">
+        </div>
+        <div class="form-group">
+          <label for="primaryPolicyId">Policy ID#:</label>
+          <input type="text" id="primaryPolicyId" name="primaryPolicyId">
+        </div>
+        <div class="form-group">
+          <label for="primaryGroupNumber">Group #:</label>
+          <input type="text" id="primaryGroupNumber" name="primaryGroupNumber">
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="secondaryPolicyHolderSSN">SSN:</label>
-          <input type="text" id="secondaryPolicyHolderSSN" name="secondaryPolicyHolderSSN">
+      <div class="form-group">
+        <label>Is the policy holder the same as the patient?</label>
+        <div class="radio-group">
+          <input type="radio" id="primarySameYes" name="primarySameAsPatient" value="yes">
+          <label for="primarySameYes">Yes</label>
+          <input type="radio" id="primarySameNo" name="primarySameAsPatient" value="no">
+          <label for="primarySameNo">No</label>
         </div>
-        <div class="form-group">
-          <label for="secondaryRelationToPatient">Relation to patient:</label>
-          <input type="text" id="secondaryRelationToPatient" name="secondaryRelationToPatient">
+      </div>
+      <div id="primaryPolicyHolderInfo" class="print-always-visible" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="primaryPolicyHolder">Policy Holder:</label>
+            <input type="text" id="primaryPolicyHolder" name="primaryPolicyHolder">
+          </div>
+          <div class="form-group">
+            <label for="primaryPolicyHolderDOB">DOB:</label>
+            <input type="date" id="primaryPolicyHolderDOB" name="primaryPolicyHolderDOB">
+          </div>
+          <div class="form-group">
+            <label for="primaryPolicyHolderSSN">SSN:</label>
+            <input type="text" id="primaryPolicyHolderSSN" name="primaryPolicyHolderSSN">
+          </div>
+          <div class="form-group">
+            <label for="primaryRelationToPatient">Relation to patient:</label>
+            <input type="text" id="primaryRelationToPatient" name="primaryRelationToPatient">
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="section-header">TERTIARY INSURANCE INFORMATION</div>
-  <div class="insurance-section">
-    <div class="form-row">
-      <div class="form-group">
-        <label for="tertiaryInsuranceName">Insurance Name:</label>
-        <input type="text" id="tertiaryInsuranceName" name="tertiaryInsuranceName">
-      </div>
-      <div class="form-group">
-        <label for="tertiaryInsurancePhone">Phone:</label>
-        <input type="tel" id="tertiaryInsurancePhone" name="tertiaryInsurancePhone">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="tertiaryPolicyId">Policy ID#:</label>
-        <input type="text" id="tertiaryPolicyId" name="tertiaryPolicyId">
-      </div>
-      <div class="form-group">
-        <label for="tertiaryGroupNumber">Group #:</label>
-        <input type="text" id="tertiaryGroupNumber" name="tertiaryGroupNumber">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Is the policy holder the same as the patient?</label>
-      <div class="radio-group">
-        <input type="radio" id="tertiarySameYes" name="tertiarySameAsPatient" value="yes">
-        <label for="tertiarySameYes">Yes</label>
-        <input type="radio" id="tertiarySameNo" name="tertiarySameAsPatient" value="no">
-        <label for="tertiarySameNo">No</label>
-      </div>
-    </div>
-    <div id="tertiaryPolicyHolderInfo" style="display: none;">
+    <div class="section-header">SECONDARY INSURANCE INFORMATION</div>
+    <div class="insurance-section">
       <div class="form-row">
         <div class="form-group">
-          <label for="tertiaryPolicyHolder">Policy Holder:</label>
-          <input type="text" id="tertiaryPolicyHolder" name="tertiaryPolicyHolder">
+          <label for="secondaryInsuranceName">Insurance Name:</label>
+          <input type="text" id="secondaryInsuranceName" name="secondaryInsuranceName">
         </div>
         <div class="form-group">
-          <label for="tertiaryPolicyHolderDOB">DOB:</label>
-          <input type="date" id="tertiaryPolicyHolderDOB" name="tertiaryPolicyHolderDOB">
+          <label for="secondaryInsurancePhone">Phone:</label>
+          <input type="tel" id="secondaryInsurancePhone" name="secondaryInsurancePhone">
+        </div>
+        <div class="form-group">
+          <label for="secondaryPolicyId">Policy ID#:</label>
+          <input type="text" id="secondaryPolicyId" name="secondaryPolicyId">
+        </div>
+        <div class="form-group">
+          <label for="secondaryGroupNumber">Group #:</label>
+          <input type="text" id="secondaryGroupNumber" name="secondaryGroupNumber">
         </div>
       </div>
+      <div class="form-group">
+        <label>Is the policy holder the same as the patient?</label>
+        <div class="radio-group">
+          <input type="radio" id="secondarySameYes" name="secondarySameAsPatient" value="yes">
+          <label for="secondarySameYes">Yes</label>
+          <input type="radio" id="secondarySameNo" name="secondarySameAsPatient" value="no">
+          <label for="secondarySameNo">No</label>
+        </div>
+      </div>
+      <div id="secondaryPolicyHolderInfo" class="print-always-visible" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="secondaryPolicyHolder">Policy Holder:</label>
+            <input type="text" id="secondaryPolicyHolder" name="secondaryPolicyHolder">
+          </div>
+          <div class="form-group">
+            <label for="secondaryPolicyHolderDOB">DOB:</label>
+            <input type="date" id="secondaryPolicyHolderDOB" name="secondaryPolicyHolderDOB">
+          </div>
+          <div class="form-group">
+            <label for="secondaryPolicyHolderSSN">SSN:</label>
+            <input type="text" id="secondaryPolicyHolderSSN" name="secondaryPolicyHolderSSN">
+          </div>
+          <div class="form-group">
+            <label for="secondaryRelationToPatient">Relation to patient:</label>
+            <input type="text" id="secondaryRelationToPatient" name="secondaryRelationToPatient">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">TERTIARY INSURANCE INFORMATION</div>
+    <div class="insurance-section">
       <div class="form-row">
         <div class="form-group">
-          <label for="tertiaryPolicyHolderSSN">SSN:</label>
-          <input type="text" id="tertiaryPolicyHolderSSN" name="tertiaryPolicyHolderSSN">
+          <label for="tertiaryInsuranceName">Insurance Name:</label>
+          <input type="text" id="tertiaryInsuranceName" name="tertiaryInsuranceName">
         </div>
         <div class="form-group">
-          <label for="tertiaryRelationToPatient">Relation to patient:</label>
-          <input type="text" id="tertiaryRelationToPatient" name="tertiaryRelationToPatient">
+          <label for="tertiaryInsurancePhone">Phone:</label>
+          <input type="tel" id="tertiaryInsurancePhone" name="tertiaryInsurancePhone">
+        </div>
+        <div class="form-group">
+          <label for="tertiaryPolicyId">Policy ID#:</label>
+          <input type="text" id="tertiaryPolicyId" name="tertiaryPolicyId">
+        </div>
+        <div class="form-group">
+          <label for="tertiaryGroupNumber">Group #:</label>
+          <input type="text" id="tertiaryGroupNumber" name="tertiaryGroupNumber">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Is the policy holder the same as the patient?</label>
+        <div class="radio-group">
+          <input type="radio" id="tertiarySameYes" name="tertiarySameAsPatient" value="yes">
+          <label for="tertiarySameYes">Yes</label>
+          <input type="radio" id="tertiarySameNo" name="tertiarySameAsPatient" value="no">
+          <label for="tertiarySameNo">No</label>
+        </div>
+      </div>
+      <div id="tertiaryPolicyHolderInfo" class="print-always-visible" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tertiaryPolicyHolder">Policy Holder:</label>
+            <input type="text" id="tertiaryPolicyHolder" name="tertiaryPolicyHolder">
+          </div>
+          <div class="form-group">
+            <label for="tertiaryPolicyHolderDOB">DOB:</label>
+            <input type="date" id="tertiaryPolicyHolderDOB" name="tertiaryPolicyHolderDOB">
+          </div>
+          <div class="form-group">
+            <label for="tertiaryPolicyHolderSSN">SSN:</label>
+            <input type="text" id="tertiaryPolicyHolderSSN" name="tertiaryPolicyHolderSSN">
+          </div>
+          <div class="form-group">
+            <label for="tertiaryRelationToPatient">Relation to patient:</label>
+            <input type="text" id="tertiaryRelationToPatient" name="tertiaryRelationToPatient">
+          </div>
         </div>
       </div>
     </div>
@@ -396,7 +651,7 @@
       <div id="patientSignatureWrapper" style="display: none;">
         <div class="form-group">
           <label for="patientName">Patient Name:</label>
-          <input id="patientName" name="patientName" placeholder="Enter Patient's Full Name" type="text" required />
+          <input id="patientName" name="patientName" placeholder="Enter Patient's Full Name" type="text">
         </div>
         <div class="form-group">
           <label for="signatureCanvas">Patient Signature:</label>
@@ -404,7 +659,7 @@
             <canvas id="signatureCanvas" width="400" height="100" style="border: 1px solid #ccc;"></canvas>
             <div>
               <label for="patientSignedOn">Signed on:</label>
-              <input type="date" id="patientSignedOn" name="patientSignedOn" required>
+              <input type="date" id="patientSignedOn" name="patientSignedOn">
             </div>
           </div>
           <div class="form-group">
@@ -419,7 +674,7 @@
       <div id="caregiverSignatureWrapper" style="display: none;">
         <div class="form-group">
           <label for="caregiverName">Caregiver Name:</label>
-          <input id="caregiverName" name="caregiverName" placeholder="Enter Caregiver's Full Name" type="text" required />
+          <input id="caregiverName" name="caregiverName" placeholder="Enter Caregiver's Full Name" type="text">
         </div>
         <div class="form-group">
           <label for="caregiverSignatureCanvas">Caregiver Signature:</label>
@@ -427,7 +682,7 @@
             <canvas id="caregiverSignatureCanvas" width="400" height="100" style="border: 1px solid #ccc;"></canvas>
             <div>
               <label for="caregiverSignedOn">Signed on:</label>
-              <input type="date" id="caregiverSignedOn" name="caregiverSignedOn" required>
+              <input type="date" id="caregiverSignedOn" name="caregiverSignedOn">
             </div>
           </div>
           <div class="form-group">
@@ -464,9 +719,11 @@
         <input type="tel" id="textPhone" name="textPhone">
       </div>
     </div>
-    <div class="checkbox-group" style="display: flex; align-items: center;">
-      <input type="checkbox" id="noEmailTextConsent" name="noEmailTextConsent" style="margin-right: 10px;">
-      <span for="noEmailTextConsent">I <strong>DO NOT</strong> consent to email and text message communication.</span>
+    <div class="checkbox-group">
+      <div class="checkbox-item no-consent-checkbox">
+        <input type="checkbox" id="noEmailTextConsent" name="noEmailTextConsent">
+        <label for="noEmailTextConsent">I <strong>DO NOT</strong> consent to email and text message communication.</label>
+      </div>
     </div>
   </div>
 
@@ -532,7 +789,7 @@
   <button type="submit">Submit Information</button>
 </form>
 
-<div id="response"></div>
+<div id="response" class="alert-notification"></div>
 
 <script>
   // Show/hide policy holder info based on radio selection
@@ -680,44 +937,235 @@
     const signerType = document.getElementById('signerType').value;
     const patientSignatureWrapper = document.getElementById('patientSignatureWrapper');
     const caregiverSignatureWrapper = document.getElementById('caregiverSignatureWrapper');
+    const caregiverNameInput = document.getElementById('caregiverName');
+    const caregiverSignedOnInput = document.getElementById('caregiverSignedOn');
 
     // Hide both sections by default
     patientSignatureWrapper.style.display = 'none';
     caregiverSignatureWrapper.style.display = 'none';
 
-    if (signerType === 'patient') {
-      // Show patient signature section
-      patientSignatureWrapper.style.display = 'block';
-      // Clear caregiver fields
-      document.getElementById('caregiverName').value = '';
-      document.getElementById('caregiverSignedOn').value = '';
-      document.getElementById('caregiverSignatureData').value = '';
-      caregiverCtx.clearRect(0, 0, caregiverSignatureCanvas.width, caregiverSignatureCanvas.height);
-    } else if (signerType === 'caregiver') {
-      // Show caregiver signature section
+    // Toggle required attributes for caregiver fields
+    if (signerType === 'caregiver') {
+      caregiverNameInput.setAttribute('required', 'true');
+      caregiverSignedOnInput.setAttribute('required', 'true');
       caregiverSignatureWrapper.style.display = 'block';
       // Clear patient fields
       document.getElementById('patientName').value = '';
       document.getElementById('patientSignedOn').value = '';
       document.getElementById('signatureData').value = '';
       patientCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+    } else {
+      caregiverNameInput.removeAttribute('required');
+      caregiverSignedOnInput.removeAttribute('required');
+      if (signerType === 'patient') {
+        patientSignatureWrapper.style.display = 'block';
+        // Clear caregiver fields
+        caregiverNameInput.value = '';
+        caregiverSignedOnInput.value = '';
+        document.getElementById('caregiverSignatureData').value = '';
+        caregiverCtx.clearRect(0, 0, caregiverSignatureCanvas.width, caregiverSignatureCanvas.height);
+      }
     }
   }
 
   // Initialize form on load
   document.addEventListener('DOMContentLoaded', () => {
-    toggleSignatureFields(); // Hide both signature sections initially
+    toggleSignatureFields();
   });
 
   document.getElementById('patientInfoForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Replace this URL with your n8n webhook URL
-    const webhookUrl = 'YOUR_N8N_WEBHOOK_URL';
+    const formElements = e.target.elements;
+    for (let i = 0; i < formElements.length; i++) {
+      const element = formElements[i];
+      if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+        element.setAttribute('data-original-readonly', element.readOnly);
+        element.readOnly = true;
+      }
+    }
+
+    // n8n webhook URL
+    const webhookUrl = 'https://jasonngo32.app.n8n.cloud/webhook/df70e8a7-8465-4195-aae9-da02b6acdae0';
 
     // Get form data
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
+    const data = {};
+
+    for (const [key, value] of formData.entries()) {
+      if (key === 'advanceDirective') {
+        if (!data[key]) {
+          data[key] = [];
+        }
+        data[key].push(value);
+      } else {
+        data[key] = value;
+      }
+    }
+
+    data.patientLastName = data.lastName || '';
+    data.patientFirstName = data.firstName || '';
+    data.birthdate = data.dob || '';
+    data.patientName = `${data.firstName} ${data.lastName}`.trim();
+
+    // Clone the entire document
+    const tempDoc = document.documentElement.cloneNode(true);
+    const clonedForm = tempDoc.querySelector('#patientInfoForm');
+    if (clonedForm) {
+      clonedForm.querySelectorAll('input, select, textarea').forEach(el => {
+        el.readOnly = true;
+        el.disabled = true;
+        // el.style.backgroundColor = '#f5f5f5';
+        // el.style.borderColor = '#ddd';
+      });
+
+      const genderSelect = tempDoc.querySelector('#gender');
+      if (genderSelect) {
+        genderSelect.style.backgroundColor = 'transparent';
+        genderSelect.style.borderColor = '#ccc';
+        genderSelect.style.color = 'inherit';
+      }
+      // Remove all buttons
+      clonedForm.querySelectorAll('button').forEach(btn => btn.remove());
+
+      // Convert signature canvases to images
+      const signatures = [
+        { canvas: 'signatureCanvas', data: 'signatureData' },
+        { canvas: 'caregiverSignatureCanvas', data: 'caregiverSignatureData' },
+        { canvas: 'infusionSignatureCanvas', data: 'infusionSignatureData' }
+      ];
+
+      signatures.forEach(sig => {
+        const canvas = clonedForm.querySelector(`#${sig.canvas}`);
+        const data = clonedForm.querySelector(`#${sig.data}`);
+        if (canvas && data && data.value) {
+          const img = document.createElement('img');
+          img.src = data.value;
+          img.width = canvas.width;
+          img.height = canvas.height;
+          img.style.border = '1px solid #ccc';
+          canvas.parentNode.replaceChild(img, canvas);
+        }
+      });
+    }
+    // Set input values in the cloned document to reflect user data
+    const form = tempDoc.querySelector('#patientInfoForm');
+    if (form) {
+      // Handle text, tel, email, date, and hidden inputs
+      form.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], input[type="date"], input[type="hidden"]').forEach(input => {
+        const originalInput = document.getElementById(input.id);
+        if (originalInput && originalInput.value) {
+          input.setAttribute('value', originalInput.value);
+        }
+      });
+
+      // Handle textareas
+      form.querySelectorAll('textarea').forEach(textarea => {
+        const originalTextarea = document.getElementById(textarea.id);
+        if (originalTextarea && originalTextarea.value) {
+          textarea.textContent = originalTextarea.value;
+          textarea.setAttribute('value', originalTextarea.value);
+        }
+      });
+
+      // Handle radio and checkbox inputs
+      form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+        const originalInput = document.getElementById(input.id);
+        if (originalInput) {
+          if (originalInput.checked) {
+            input.setAttribute('checked', 'checked');
+          } else {
+            input.removeAttribute('checked');
+          }
+        }
+      });
+
+      // Handle select dropdown
+      form.querySelectorAll('select').forEach(select => {
+        const originalSelect = document.getElementById(select.id);
+        if (originalSelect) {
+          const selectedValue = originalSelect.value;
+          select.querySelectorAll('option').forEach(option => {
+            if (option.value === selectedValue) {
+              option.setAttribute('selected', 'selected');
+            } else {
+              option.removeAttribute('selected');
+            }
+          });
+        }
+      });
+    }
+
+    // Replace canvas elements with img tags containing signature data
+    // Handle patient signature
+    const patientSignatureCanvas = tempDoc.querySelector('#signatureCanvas');
+    const patientSignatureData = document.getElementById('signatureData').value;
+    if (patientSignatureCanvas) {
+      if (patientSignatureData) {
+        const patientImg = document.createElement('img');
+        patientImg.src = patientSignatureData;
+        patientImg.width = 400;
+        patientImg.height = 100;
+        patientImg.style.border = '1px solid #ccc';
+        patientSignatureCanvas.parentNode.replaceChild(patientImg, patientSignatureCanvas);
+      } else {
+        patientSignatureCanvas.parentNode.removeChild(patientSignatureCanvas);
+      }
+    }
+
+    // Handle caregiver signature
+    const caregiverSignatureCanvas = tempDoc.querySelector('#caregiverSignatureCanvas');
+    const caregiverSignatureData = document.getElementById('caregiverSignatureData').value;
+    if (caregiverSignatureCanvas) {
+      if (caregiverSignatureData) {
+        const caregiverImg = document.createElement('img');
+        caregiverImg.src = caregiverSignatureData;
+        caregiverImg.width = 400;
+        caregiverImg.height = 100;
+        caregiverImg.style.border = '1px solid #ccc';
+        caregiverSignatureCanvas.parentNode.replaceChild(caregiverImg, caregiverSignatureCanvas);
+      } else {
+        caregiverSignatureCanvas.parentNode.removeChild(caregiverSignatureCanvas);
+      }
+    }
+
+    // Handle infusion signature
+    const infusionSignatureCanvas = tempDoc.querySelector('#infusionSignatureCanvas');
+    const infusionSignatureData = document.getElementById('infusionSignatureData').value;
+    if (infusionSignatureCanvas) {
+      if (infusionSignatureData) {
+        const infusionImg = document.createElement('img');
+        infusionImg.src = infusionSignatureData;
+        infusionImg.width = 400;
+        infusionImg.height = 100;
+        infusionImg.style.border = '1px solid #ccc';
+        infusionSignatureCanvas.parentNode.replaceChild(infusionImg, infusionSignatureCanvas);
+      } else {
+        infusionSignatureCanvas.parentNode.removeChild(infusionSignatureCanvas);
+      }
+    }
+
+    // Remove script tags to prevent execution in email
+    const scripts = tempDoc.querySelectorAll('script');
+    scripts.forEach(script => script.parentNode.removeChild(script));
+
+    // Replace footer placeholder in the style block
+    let formHtml = tempDoc.outerHTML;
+    const patientInfoFooter = `${data.patientLastName}, ${data.patientFirstName} DOB:${data.birthdate} Patient Information`;
+    formHtml = formHtml.replace('${patientInfoFooter}', patientInfoFooter);
+
+    // Inline CSS using juice
+    try {
+      formHtml = juice(formHtml, { inlinePseudoElements: true });
+    } catch (error) {
+      console.error('Error inlining CSS:', error);
+    }
+
+    // Prepare payload
+    const payload = {
+      formData: data,
+      html: formHtml
+    };
 
     try {
       const response = await fetch(webhookUrl, {
@@ -725,18 +1173,55 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const result = await response.text();
 
       // Display the response
       const responseDiv = document.getElementById('response');
+      for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
+          element.readOnly = element.getAttribute('data-original-readonly') === 'true';
+          element.removeAttribute('data-original-readonly'); // Clean up
+        }
+      }
+      responseDiv.innerHTML = 'Form submitted successfully! A confirmation email has been sent. <button class="close-btn">&times;</button>';
+      responseDiv.className = 'alert-notification success';
       responseDiv.style.display = 'block';
-      responseDiv.innerHTML = result;
+      const closeBtn = responseDiv.querySelector('.close-btn');
+      closeBtn.addEventListener('click', () => {
+        responseDiv.style.animation = 'fadeOut 0.3s ease-in-out';
+        setTimeout(() => {
+          responseDiv.style.display = 'none';
+          responseDiv.style.animation = 'fadeIn 0.3s ease-in-out'; // Reset animation
+        }, 300);
+      });
     } catch (error) {
+      for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+        if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+          element.readOnly = element.getAttribute('data-original-readonly') === 'true';
+          element.removeAttribute('data-original-readonly');
+        }
+      }
       console.error('Error:', error);
-      alert('An error occurred while submitting the form.');
+      const responseDiv = document.getElementById('response');
+      responseDiv.innerHTML = 'An error occurred while submitting the form. Please try again later. <button class="close-btn">&times;</button>';
+      responseDiv.className = 'alert-notification error';
+      responseDiv.style.display = 'block';
+      const closeBtn = responseDiv.querySelector('.close-btn');
+      closeBtn.addEventListener('click', () => {
+        responseDiv.style.animation = 'fadeOut 0.3s ease-in-out';
+        setTimeout(() => {
+          responseDiv.style.display = 'none';
+          responseDiv.style.animation = 'fadeIn 0.3s ease-in-out'; // Reset animation
+        }, 300);
+      });
     }
   });
 </script>
